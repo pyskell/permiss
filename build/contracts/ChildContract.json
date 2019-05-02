@@ -28,7 +28,7 @@
           "type": "bytes32[]"
         }
       ],
-      "name": "upgrade",
+      "name": "disable",
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
@@ -56,7 +56,7 @@
           "type": "bytes32[]"
         }
       ],
-      "name": "disable",
+      "name": "upgrade",
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
@@ -68,7 +68,7 @@
   "deployedBytecode": "0x",
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "import \"./PermissAbstract.sol\";\r\n\r\ncontract ChildContract is PermissAbstract{\r\n    function permitted(bytes32[] calldata _permission) external returns(bool){\r\n        revert();\r\n    }\r\n    function upgrade(bytes32[] calldata _permission) external{\r\n        revert();\r\n    }\r\n    function enable(bytes32[] calldata _permission) external{\r\n        revert();\r\n    }\r\n    function disable(bytes32[] calldata _permission) external{\r\n        revert();\r\n    }\r\n}",
+  "source": "import \"./PermissAbstract.sol\";\r\n\r\ncontract ChildContract is PermissAbstract{\r\n    function _permitted(bytes32[] memory _permission) internal returns(bool){\r\n        revert();\r\n    }\r\n    function _upgrade(bytes32[] memory _permission) internal{\r\n        revert();\r\n    }\r\n    function _enable(bytes32[] memory _permission) internal{\r\n        revert();\r\n    }\r\n    function _disable(bytes32[] memory _permission) internal{\r\n        revert();\r\n    }\r\n}",
   "sourcePath": "C:\\Users\\me\\Software\\permiss\\contracts\\ChildContract.sol",
   "ast": {
     "absolutePath": "/C/Users/me/Software/permiss/contracts/ChildContract.sol",
@@ -86,7 +86,7 @@
         "id": 1,
         "nodeType": "ImportDirective",
         "scope": 47,
-        "sourceUnit": 224,
+        "sourceUnit": 251,
         "src": "0:31:0",
         "symbolAliases": [],
         "unitAlias": ""
@@ -100,10 +100,10 @@
               "id": 2,
               "name": "PermissAbstract",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 223,
+              "referencedDeclaration": 250,
               "src": "61:15:0",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_PermissAbstract_$223",
+                "typeIdentifier": "t_contract$_PermissAbstract_$250",
                 "typeString": "contract PermissAbstract"
               }
             },
@@ -113,7 +113,7 @@
           }
         ],
         "contractDependencies": [
-          223
+          250
         ],
         "contractKind": "contract",
         "documentation": null,
@@ -121,7 +121,7 @@
         "id": 46,
         "linearizedBaseContracts": [
           46,
-          223
+          250
         ],
         "name": "ChildContract",
         "nodeType": "ContractDefinition",
@@ -130,7 +130,7 @@
             "body": {
               "id": 14,
               "nodeType": "Block",
-              "src": "156:27:0",
+              "src": "155:27:0",
               "statements": [
                 {
                   "expression": {
@@ -142,11 +142,11 @@
                       "name": "revert",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        243,
-                        244
+                        270,
+                        271
                       ],
-                      "referencedDeclaration": 243,
-                      "src": "167:6:0",
+                      "referencedDeclaration": 270,
+                      "src": "166:6:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_revert_pure$__$returns$__$",
                         "typeString": "function () pure"
@@ -160,7 +160,7 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "167:8:0",
+                    "src": "166:8:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
@@ -168,7 +168,7 @@
                   },
                   "id": 13,
                   "nodeType": "ExpressionStatement",
-                  "src": "167:8:0"
+                  "src": "166:8:0"
                 }
               ]
             },
@@ -177,7 +177,7 @@
             "implemented": true,
             "kind": "function",
             "modifiers": [],
-            "name": "permitted",
+            "name": "_permitted",
             "nodeType": "FunctionDefinition",
             "parameters": {
               "id": 7,
@@ -189,11 +189,11 @@
                   "name": "_permission",
                   "nodeType": "VariableDeclaration",
                   "scope": 15,
-                  "src": "102:30:0",
+                  "src": "103:28:0",
                   "stateVariable": false,
-                  "storageLocation": "calldata",
+                  "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_bytes32_$dyn_calldata_ptr",
+                    "typeIdentifier": "t_array$_t_bytes32_$dyn_memory_ptr",
                     "typeString": "bytes32[]"
                   },
                   "typeName": {
@@ -201,7 +201,7 @@
                       "id": 4,
                       "name": "bytes32",
                       "nodeType": "ElementaryTypeName",
-                      "src": "102:7:0",
+                      "src": "103:7:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_bytes32",
                         "typeString": "bytes32"
@@ -210,7 +210,7 @@
                     "id": 5,
                     "length": null,
                     "nodeType": "ArrayTypeName",
-                    "src": "102:9:0",
+                    "src": "103:9:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_bytes32_$dyn_storage_ptr",
                       "typeString": "bytes32[]"
@@ -220,7 +220,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "101:32:0"
+              "src": "102:30:0"
             },
             "returnParameters": {
               "id": 10,
@@ -232,7 +232,7 @@
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "scope": 15,
-                  "src": "151:4:0",
+                  "src": "150:4:0",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -243,7 +243,7 @@
                     "id": 8,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
-                    "src": "151:4:0",
+                    "src": "150:4:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
@@ -253,19 +253,19 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "150:6:0"
+              "src": "149:6:0"
             },
             "scope": 46,
-            "src": "83:100:0",
+            "src": "83:99:0",
             "stateMutability": "nonpayable",
-            "superFunction": 182,
-            "visibility": "external"
+            "superFunction": 175,
+            "visibility": "internal"
           },
           {
             "body": {
               "id": 24,
               "nodeType": "Block",
-              "src": "246:27:0",
+              "src": "244:27:0",
               "statements": [
                 {
                   "expression": {
@@ -277,11 +277,11 @@
                       "name": "revert",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        243,
-                        244
+                        270,
+                        271
                       ],
-                      "referencedDeclaration": 243,
-                      "src": "257:6:0",
+                      "referencedDeclaration": 270,
+                      "src": "255:6:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_revert_pure$__$returns$__$",
                         "typeString": "function () pure"
@@ -295,7 +295,7 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "257:8:0",
+                    "src": "255:8:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
@@ -303,7 +303,7 @@
                   },
                   "id": 23,
                   "nodeType": "ExpressionStatement",
-                  "src": "257:8:0"
+                  "src": "255:8:0"
                 }
               ]
             },
@@ -312,7 +312,7 @@
             "implemented": true,
             "kind": "function",
             "modifiers": [],
-            "name": "upgrade",
+            "name": "_upgrade",
             "nodeType": "FunctionDefinition",
             "parameters": {
               "id": 19,
@@ -324,11 +324,11 @@
                   "name": "_permission",
                   "nodeType": "VariableDeclaration",
                   "scope": 25,
-                  "src": "206:30:0",
+                  "src": "206:28:0",
                   "stateVariable": false,
-                  "storageLocation": "calldata",
+                  "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_bytes32_$dyn_calldata_ptr",
+                    "typeIdentifier": "t_array$_t_bytes32_$dyn_memory_ptr",
                     "typeString": "bytes32[]"
                   },
                   "typeName": {
@@ -355,25 +355,25 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "205:32:0"
+              "src": "205:30:0"
             },
             "returnParameters": {
               "id": 20,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "246:0:0"
+              "src": "244:0:0"
             },
             "scope": 46,
-            "src": "189:84:0",
+            "src": "188:83:0",
             "stateMutability": "nonpayable",
-            "superFunction": 201,
-            "visibility": "external"
+            "superFunction": 181,
+            "visibility": "internal"
           },
           {
             "body": {
               "id": 34,
               "nodeType": "Block",
-              "src": "335:27:0",
+              "src": "332:27:0",
               "statements": [
                 {
                   "expression": {
@@ -385,11 +385,11 @@
                       "name": "revert",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        243,
-                        244
+                        270,
+                        271
                       ],
-                      "referencedDeclaration": 243,
-                      "src": "346:6:0",
+                      "referencedDeclaration": 270,
+                      "src": "343:6:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_revert_pure$__$returns$__$",
                         "typeString": "function () pure"
@@ -403,7 +403,7 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "346:8:0",
+                    "src": "343:8:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
@@ -411,7 +411,7 @@
                   },
                   "id": 33,
                   "nodeType": "ExpressionStatement",
-                  "src": "346:8:0"
+                  "src": "343:8:0"
                 }
               ]
             },
@@ -420,7 +420,7 @@
             "implemented": true,
             "kind": "function",
             "modifiers": [],
-            "name": "enable",
+            "name": "_enable",
             "nodeType": "FunctionDefinition",
             "parameters": {
               "id": 29,
@@ -432,11 +432,11 @@
                   "name": "_permission",
                   "nodeType": "VariableDeclaration",
                   "scope": 35,
-                  "src": "295:30:0",
+                  "src": "294:28:0",
                   "stateVariable": false,
-                  "storageLocation": "calldata",
+                  "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_bytes32_$dyn_calldata_ptr",
+                    "typeIdentifier": "t_array$_t_bytes32_$dyn_memory_ptr",
                     "typeString": "bytes32[]"
                   },
                   "typeName": {
@@ -444,7 +444,7 @@
                       "id": 26,
                       "name": "bytes32",
                       "nodeType": "ElementaryTypeName",
-                      "src": "295:7:0",
+                      "src": "294:7:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_bytes32",
                         "typeString": "bytes32"
@@ -453,7 +453,7 @@
                     "id": 27,
                     "length": null,
                     "nodeType": "ArrayTypeName",
-                    "src": "295:9:0",
+                    "src": "294:9:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_bytes32_$dyn_storage_ptr",
                       "typeString": "bytes32[]"
@@ -463,25 +463,25 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "294:32:0"
+              "src": "293:30:0"
             },
             "returnParameters": {
               "id": 30,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "335:0:0"
+              "src": "332:0:0"
             },
             "scope": 46,
-            "src": "279:83:0",
+            "src": "277:82:0",
             "stateMutability": "nonpayable",
-            "superFunction": 207,
-            "visibility": "external"
+            "superFunction": 187,
+            "visibility": "internal"
           },
           {
             "body": {
               "id": 44,
               "nodeType": "Block",
-              "src": "425:27:0",
+              "src": "421:27:0",
               "statements": [
                 {
                   "expression": {
@@ -493,11 +493,11 @@
                       "name": "revert",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        243,
-                        244
+                        270,
+                        271
                       ],
-                      "referencedDeclaration": 243,
-                      "src": "436:6:0",
+                      "referencedDeclaration": 270,
+                      "src": "432:6:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_revert_pure$__$returns$__$",
                         "typeString": "function () pure"
@@ -511,7 +511,7 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "436:8:0",
+                    "src": "432:8:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
@@ -519,7 +519,7 @@
                   },
                   "id": 43,
                   "nodeType": "ExpressionStatement",
-                  "src": "436:8:0"
+                  "src": "432:8:0"
                 }
               ]
             },
@@ -528,7 +528,7 @@
             "implemented": true,
             "kind": "function",
             "modifiers": [],
-            "name": "disable",
+            "name": "_disable",
             "nodeType": "FunctionDefinition",
             "parameters": {
               "id": 39,
@@ -540,11 +540,11 @@
                   "name": "_permission",
                   "nodeType": "VariableDeclaration",
                   "scope": 45,
-                  "src": "385:30:0",
+                  "src": "383:28:0",
                   "stateVariable": false,
-                  "storageLocation": "calldata",
+                  "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_bytes32_$dyn_calldata_ptr",
+                    "typeIdentifier": "t_array$_t_bytes32_$dyn_memory_ptr",
                     "typeString": "bytes32[]"
                   },
                   "typeName": {
@@ -552,7 +552,7 @@
                       "id": 36,
                       "name": "bytes32",
                       "nodeType": "ElementaryTypeName",
-                      "src": "385:7:0",
+                      "src": "383:7:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_bytes32",
                         "typeString": "bytes32"
@@ -561,7 +561,7 @@
                     "id": 37,
                     "length": null,
                     "nodeType": "ArrayTypeName",
-                    "src": "385:9:0",
+                    "src": "383:9:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_bytes32_$dyn_storage_ptr",
                       "typeString": "bytes32[]"
@@ -571,26 +571,26 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "384:32:0"
+              "src": "382:30:0"
             },
             "returnParameters": {
               "id": 40,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "425:0:0"
+              "src": "421:0:0"
             },
             "scope": 46,
-            "src": "368:84:0",
+            "src": "365:83:0",
             "stateMutability": "nonpayable",
-            "superFunction": 222,
-            "visibility": "external"
+            "superFunction": 193,
+            "visibility": "internal"
           }
         ],
         "scope": 47,
-        "src": "35:420:0"
+        "src": "35:416:0"
       }
     ],
-    "src": "0:455:0"
+    "src": "0:451:0"
   },
   "legacyAST": {
     "absolutePath": "/C/Users/me/Software/permiss/contracts/ChildContract.sol",
@@ -608,7 +608,7 @@
         "id": 1,
         "nodeType": "ImportDirective",
         "scope": 47,
-        "sourceUnit": 224,
+        "sourceUnit": 251,
         "src": "0:31:0",
         "symbolAliases": [],
         "unitAlias": ""
@@ -622,10 +622,10 @@
               "id": 2,
               "name": "PermissAbstract",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 223,
+              "referencedDeclaration": 250,
               "src": "61:15:0",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_PermissAbstract_$223",
+                "typeIdentifier": "t_contract$_PermissAbstract_$250",
                 "typeString": "contract PermissAbstract"
               }
             },
@@ -635,7 +635,7 @@
           }
         ],
         "contractDependencies": [
-          223
+          250
         ],
         "contractKind": "contract",
         "documentation": null,
@@ -643,7 +643,7 @@
         "id": 46,
         "linearizedBaseContracts": [
           46,
-          223
+          250
         ],
         "name": "ChildContract",
         "nodeType": "ContractDefinition",
@@ -652,7 +652,7 @@
             "body": {
               "id": 14,
               "nodeType": "Block",
-              "src": "156:27:0",
+              "src": "155:27:0",
               "statements": [
                 {
                   "expression": {
@@ -664,11 +664,11 @@
                       "name": "revert",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        243,
-                        244
+                        270,
+                        271
                       ],
-                      "referencedDeclaration": 243,
-                      "src": "167:6:0",
+                      "referencedDeclaration": 270,
+                      "src": "166:6:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_revert_pure$__$returns$__$",
                         "typeString": "function () pure"
@@ -682,7 +682,7 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "167:8:0",
+                    "src": "166:8:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
@@ -690,7 +690,7 @@
                   },
                   "id": 13,
                   "nodeType": "ExpressionStatement",
-                  "src": "167:8:0"
+                  "src": "166:8:0"
                 }
               ]
             },
@@ -699,7 +699,7 @@
             "implemented": true,
             "kind": "function",
             "modifiers": [],
-            "name": "permitted",
+            "name": "_permitted",
             "nodeType": "FunctionDefinition",
             "parameters": {
               "id": 7,
@@ -711,11 +711,11 @@
                   "name": "_permission",
                   "nodeType": "VariableDeclaration",
                   "scope": 15,
-                  "src": "102:30:0",
+                  "src": "103:28:0",
                   "stateVariable": false,
-                  "storageLocation": "calldata",
+                  "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_bytes32_$dyn_calldata_ptr",
+                    "typeIdentifier": "t_array$_t_bytes32_$dyn_memory_ptr",
                     "typeString": "bytes32[]"
                   },
                   "typeName": {
@@ -723,7 +723,7 @@
                       "id": 4,
                       "name": "bytes32",
                       "nodeType": "ElementaryTypeName",
-                      "src": "102:7:0",
+                      "src": "103:7:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_bytes32",
                         "typeString": "bytes32"
@@ -732,7 +732,7 @@
                     "id": 5,
                     "length": null,
                     "nodeType": "ArrayTypeName",
-                    "src": "102:9:0",
+                    "src": "103:9:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_bytes32_$dyn_storage_ptr",
                       "typeString": "bytes32[]"
@@ -742,7 +742,7 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "101:32:0"
+              "src": "102:30:0"
             },
             "returnParameters": {
               "id": 10,
@@ -754,7 +754,7 @@
                   "name": "",
                   "nodeType": "VariableDeclaration",
                   "scope": 15,
-                  "src": "151:4:0",
+                  "src": "150:4:0",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -765,7 +765,7 @@
                     "id": 8,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
-                    "src": "151:4:0",
+                    "src": "150:4:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_bool",
                       "typeString": "bool"
@@ -775,19 +775,19 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "150:6:0"
+              "src": "149:6:0"
             },
             "scope": 46,
-            "src": "83:100:0",
+            "src": "83:99:0",
             "stateMutability": "nonpayable",
-            "superFunction": 182,
-            "visibility": "external"
+            "superFunction": 175,
+            "visibility": "internal"
           },
           {
             "body": {
               "id": 24,
               "nodeType": "Block",
-              "src": "246:27:0",
+              "src": "244:27:0",
               "statements": [
                 {
                   "expression": {
@@ -799,11 +799,11 @@
                       "name": "revert",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        243,
-                        244
+                        270,
+                        271
                       ],
-                      "referencedDeclaration": 243,
-                      "src": "257:6:0",
+                      "referencedDeclaration": 270,
+                      "src": "255:6:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_revert_pure$__$returns$__$",
                         "typeString": "function () pure"
@@ -817,7 +817,7 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "257:8:0",
+                    "src": "255:8:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
@@ -825,7 +825,7 @@
                   },
                   "id": 23,
                   "nodeType": "ExpressionStatement",
-                  "src": "257:8:0"
+                  "src": "255:8:0"
                 }
               ]
             },
@@ -834,7 +834,7 @@
             "implemented": true,
             "kind": "function",
             "modifiers": [],
-            "name": "upgrade",
+            "name": "_upgrade",
             "nodeType": "FunctionDefinition",
             "parameters": {
               "id": 19,
@@ -846,11 +846,11 @@
                   "name": "_permission",
                   "nodeType": "VariableDeclaration",
                   "scope": 25,
-                  "src": "206:30:0",
+                  "src": "206:28:0",
                   "stateVariable": false,
-                  "storageLocation": "calldata",
+                  "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_bytes32_$dyn_calldata_ptr",
+                    "typeIdentifier": "t_array$_t_bytes32_$dyn_memory_ptr",
                     "typeString": "bytes32[]"
                   },
                   "typeName": {
@@ -877,25 +877,25 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "205:32:0"
+              "src": "205:30:0"
             },
             "returnParameters": {
               "id": 20,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "246:0:0"
+              "src": "244:0:0"
             },
             "scope": 46,
-            "src": "189:84:0",
+            "src": "188:83:0",
             "stateMutability": "nonpayable",
-            "superFunction": 201,
-            "visibility": "external"
+            "superFunction": 181,
+            "visibility": "internal"
           },
           {
             "body": {
               "id": 34,
               "nodeType": "Block",
-              "src": "335:27:0",
+              "src": "332:27:0",
               "statements": [
                 {
                   "expression": {
@@ -907,11 +907,11 @@
                       "name": "revert",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        243,
-                        244
+                        270,
+                        271
                       ],
-                      "referencedDeclaration": 243,
-                      "src": "346:6:0",
+                      "referencedDeclaration": 270,
+                      "src": "343:6:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_revert_pure$__$returns$__$",
                         "typeString": "function () pure"
@@ -925,7 +925,7 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "346:8:0",
+                    "src": "343:8:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
@@ -933,7 +933,7 @@
                   },
                   "id": 33,
                   "nodeType": "ExpressionStatement",
-                  "src": "346:8:0"
+                  "src": "343:8:0"
                 }
               ]
             },
@@ -942,7 +942,7 @@
             "implemented": true,
             "kind": "function",
             "modifiers": [],
-            "name": "enable",
+            "name": "_enable",
             "nodeType": "FunctionDefinition",
             "parameters": {
               "id": 29,
@@ -954,11 +954,11 @@
                   "name": "_permission",
                   "nodeType": "VariableDeclaration",
                   "scope": 35,
-                  "src": "295:30:0",
+                  "src": "294:28:0",
                   "stateVariable": false,
-                  "storageLocation": "calldata",
+                  "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_bytes32_$dyn_calldata_ptr",
+                    "typeIdentifier": "t_array$_t_bytes32_$dyn_memory_ptr",
                     "typeString": "bytes32[]"
                   },
                   "typeName": {
@@ -966,7 +966,7 @@
                       "id": 26,
                       "name": "bytes32",
                       "nodeType": "ElementaryTypeName",
-                      "src": "295:7:0",
+                      "src": "294:7:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_bytes32",
                         "typeString": "bytes32"
@@ -975,7 +975,7 @@
                     "id": 27,
                     "length": null,
                     "nodeType": "ArrayTypeName",
-                    "src": "295:9:0",
+                    "src": "294:9:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_bytes32_$dyn_storage_ptr",
                       "typeString": "bytes32[]"
@@ -985,25 +985,25 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "294:32:0"
+              "src": "293:30:0"
             },
             "returnParameters": {
               "id": 30,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "335:0:0"
+              "src": "332:0:0"
             },
             "scope": 46,
-            "src": "279:83:0",
+            "src": "277:82:0",
             "stateMutability": "nonpayable",
-            "superFunction": 207,
-            "visibility": "external"
+            "superFunction": 187,
+            "visibility": "internal"
           },
           {
             "body": {
               "id": 44,
               "nodeType": "Block",
-              "src": "425:27:0",
+              "src": "421:27:0",
               "statements": [
                 {
                   "expression": {
@@ -1015,11 +1015,11 @@
                       "name": "revert",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        243,
-                        244
+                        270,
+                        271
                       ],
-                      "referencedDeclaration": 243,
-                      "src": "436:6:0",
+                      "referencedDeclaration": 270,
+                      "src": "432:6:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_revert_pure$__$returns$__$",
                         "typeString": "function () pure"
@@ -1033,7 +1033,7 @@
                     "lValueRequested": false,
                     "names": [],
                     "nodeType": "FunctionCall",
-                    "src": "436:8:0",
+                    "src": "432:8:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_tuple$__$",
                       "typeString": "tuple()"
@@ -1041,7 +1041,7 @@
                   },
                   "id": 43,
                   "nodeType": "ExpressionStatement",
-                  "src": "436:8:0"
+                  "src": "432:8:0"
                 }
               ]
             },
@@ -1050,7 +1050,7 @@
             "implemented": true,
             "kind": "function",
             "modifiers": [],
-            "name": "disable",
+            "name": "_disable",
             "nodeType": "FunctionDefinition",
             "parameters": {
               "id": 39,
@@ -1062,11 +1062,11 @@
                   "name": "_permission",
                   "nodeType": "VariableDeclaration",
                   "scope": 45,
-                  "src": "385:30:0",
+                  "src": "383:28:0",
                   "stateVariable": false,
-                  "storageLocation": "calldata",
+                  "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_array$_t_bytes32_$dyn_calldata_ptr",
+                    "typeIdentifier": "t_array$_t_bytes32_$dyn_memory_ptr",
                     "typeString": "bytes32[]"
                   },
                   "typeName": {
@@ -1074,7 +1074,7 @@
                       "id": 36,
                       "name": "bytes32",
                       "nodeType": "ElementaryTypeName",
-                      "src": "385:7:0",
+                      "src": "383:7:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_bytes32",
                         "typeString": "bytes32"
@@ -1083,7 +1083,7 @@
                     "id": 37,
                     "length": null,
                     "nodeType": "ArrayTypeName",
-                    "src": "385:9:0",
+                    "src": "383:9:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_array$_t_bytes32_$dyn_storage_ptr",
                       "typeString": "bytes32[]"
@@ -1093,26 +1093,26 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "384:32:0"
+              "src": "382:30:0"
             },
             "returnParameters": {
               "id": 40,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "425:0:0"
+              "src": "421:0:0"
             },
             "scope": 46,
-            "src": "368:84:0",
+            "src": "365:83:0",
             "stateMutability": "nonpayable",
-            "superFunction": 222,
-            "visibility": "external"
+            "superFunction": 193,
+            "visibility": "internal"
           }
         ],
         "scope": 47,
-        "src": "35:420:0"
+        "src": "35:416:0"
       }
     ],
-    "src": "0:455:0"
+    "src": "0:451:0"
   },
   "compiler": {
     "name": "solc",
@@ -1120,7 +1120,7 @@
   },
   "networks": {},
   "schemaVersion": "3.0.8",
-  "updatedAt": "2019-05-02T17:34:45.908Z",
+  "updatedAt": "2019-05-02T18:52:33.519Z",
   "devdoc": {
     "methods": {}
   },

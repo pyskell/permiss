@@ -1,15 +1,23 @@
 pragma solidity >=0.4.21 <0.6.0;
 import "./ChildContract.sol";
 
-// These contracts should *never* hold state beyond the small bit specified
+// In general these contracts are designed to be low on state usage.
+// This means that the Abstract contract is the only one intended to
+// have the stateful variables declared below (and rarely changed).
+// While any ChildContract that inherits this contract should not change
+// any state after it is deployed.
+// We're largely using the blockchain to trustlessly share agreements *and* have
+// an easily accessible and consistent execution environment.
+// We want to avoid using it in prohibitively costly ways that sacrifice privacy.
+
 contract PermissAbstract{
     bool enabled = true;
     address upgrade_address = address(0x0);
     address previous_address = address(0x0);
     ChildContract child;
 
-    constructor(ChildContract _childContract) public{
-        child = _childContract;
+    constructor(address _childContractAddress) public{
+        child = ChildContract(_childContractAddress);
     }
 
     // _permissions for each contract function can be the same or different.
@@ -31,14 +39,21 @@ contract PermissAbstract{
         require(upgrade_address != previous_address);
     }
 
+    function _permitted(bytes32[] memory _permission) internal returns(bool);
+    function _upgrade(bytes32[] memory _permission) internal;
+    function _enable(bytes32[] memory _permission) internal;
+    function _disable(bytes32[] memory _permission) internal;
+
     function permitted(bytes32[] calldata _permission) external enabledContract returns(bool){
-        child.permitted(_permission);
+        _permitted(_permission);
     }
     function upgrade(bytes32[] calldata _permission) external notUpgraded enabledContract uniqueUpgradeAddress {
-        child.upgrade(_permission);
+        _upgrade(_permission);
     }
-    function enable(bytes32[] calldata _permission) external;
+    function enable(bytes32[] calldata _permission) external{
+        _enable(_permission);
+    }
     function disable(bytes32[] calldata _permission) external enabledContract{
-        child.disable(_permission);
+        _disable(_permission);
     }
 }

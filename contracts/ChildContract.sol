@@ -1,16 +1,16 @@
 import "./PermissAbstract.sol";
 
 contract ChildContract is PermissAbstract{
-    function permitted(bytes32[] calldata _permission) external returns(bool){
+    function _permitted(bytes32[] memory _permission) internal returns(bool){
         revert();
     }
-    function upgrade(bytes32[] calldata _permission) external{
+    function _upgrade(bytes32[] memory _permission) internal{
         revert();
     }
-    function enable(bytes32[] calldata _permission) external{
+    function _enable(bytes32[] memory _permission) internal{
         revert();
     }
-    function disable(bytes32[] calldata _permission) external{
+    function _disable(bytes32[] memory _permission) internal{
         revert();
     }
 }
