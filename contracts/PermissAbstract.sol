@@ -1,4 +1,4 @@
-pragma solidity >=0.4.21 <0.6.0;
+pragma solidity >=0.5.1 <0.6.0;
 import "./ChildContract.sol";
 
 // In general these contracts are designed to be low on state usage.
@@ -41,19 +41,25 @@ contract PermissAbstract{
 
     function _permitted(bytes32[] memory _permission) internal returns(bool);
     function _upgrade(bytes32[] memory _permission) internal;
-    function _enable(bytes32[] memory _permission) internal;
-    function _disable(bytes32[] memory _permission) internal;
+    // _enable should return true if permission to enable the contract is valid.
+    function _enable(bytes32[] memory _permission) internal returns(bool);
+    // _disable should return true if permission to disable the contract is valid.
+    function _disable(bytes32[] memory _permission) internal returns(bool);
 
     function permitted(bytes32[] calldata _permission) external enabledContract returns(bool){
         _permitted(_permission);
     }
-    function upgrade(bytes32[] calldata _permission) external notUpgraded enabledContract uniqueUpgradeAddress {
+    function upgrade(bytes32[] calldata _permission) external enabledContract notUpgraded uniqueUpgradeAddress {
         _upgrade(_permission);
     }
     function enable(bytes32[] calldata _permission) external{
-        _enable(_permission);
+        if(_enable(_permission) && !enabled){
+            enabled = true;
+        }
     }
     function disable(bytes32[] calldata _permission) external enabledContract{
-        _disable(_permission);
+        if(_disable(_permission) && enabled){
+            enabled = false;
+        }
     }
 }
