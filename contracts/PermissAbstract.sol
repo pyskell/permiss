@@ -14,11 +14,11 @@ contract PermissAbstract{
     bool enabled = true;
     address upgrade_address = address(0x0);
     address previous_address = address(0x0);
-    ChildContract child;
+    // ChildContract child;
 
-    constructor(address _childContractAddress) public{
-        child = ChildContract(_childContractAddress);
-    }
+    // constructor(address _childContractAddress) public{
+    //     child = ChildContract(_childContractAddress);
+    // }
 
     // _permissions for each contract function can be the same or different.
     // For example, maybe a minimum of 2 employees are required to call permitted().
@@ -40,34 +40,36 @@ contract PermissAbstract{
         require(address(this) != upgrade_address, "upgrade_address cannot match the current contract address");
     }
 
-    function _permitted(bytes32[] memory _permission) internal returns(bool);
-    function _upgrade(bytes32[] memory _permission) internal returns (bool);
-    // _enable should return true if permission to enable the contract is valid.
-    function _enable(bytes32[] memory _permission) internal returns(bool);
-    // _disable should return true if permission to disable the contract is valid.
-    function _disable(bytes32[] memory _permission) internal returns(bool);
-
     // TODO: Consider switching from returning bool to more informative messages.
     // TODO: Whatever we return must be agnostic to the user interface.
     // TODO: Perhaps a simple tuple of pass/fail (bool) and msg (string).
-    function permitted(bytes32[] calldata _permission) external enabledContract returns(bool){
-        return _permitted(_permission);
-    }
-    function upgrade(bytes32[] calldata _permission) external enabledContract notUpgraded uniqueUpgradeAddress returns(bool){
-        return _upgrade(_permission);
-    }
-    function enable(bytes32[] calldata _permission) external returns(bool){
-        if(_enable(_permission) && !enabled){
-            enabled = true;
-            return true;
-        }
-        return false;
-    }
-    function disable(bytes32[] calldata _permission) external enabledContract returns(bool){
-        if(_disable(_permission) && enabled){ //Restating ourselves for clarity
-            enabled = false;
-            return true;
-        }
-        return false;
-    }
+
+    function permitted(bytes32[] calldata _permission) external returns(bool);
+    function upgrade(bytes32[] calldata _permission) external returns (bool);
+    // _enable should return true if permission to enable the contract is valid.
+    function enable(bytes32[] calldata _permission) external returns(bool);
+    // _disable should return true if permission to disable the contract is valid.
+    function disable(bytes32[] calldata _permission) external returns(bool);
+
+
+    // function permitted(bytes32[] calldata _permission) external enabledContract returns(bool){
+    //     return _permitted(_permission);
+    // }
+    // function upgrade(bytes32[] calldata _permission) external enabledContract notUpgraded uniqueUpgradeAddress returns(bool){
+    //     return _upgrade(_permission);
+    // }
+    // function enable(bytes32[] calldata _permission) external returns(bool){
+    //     if(_enable(_permission) && !enabled){
+    //         enabled = true;
+    //         return true;
+    //     }
+    //     return false;
+    // }
+    // function disable(bytes32[] calldata _permission) external enabledContract returns(bool){
+    //     if(_disable(_permission) && enabled){ //Restating ourselves for clarity
+    //         enabled = false;
+    //         return true;
+    //     }
+    //     return false;
+    // }
 }

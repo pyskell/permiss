@@ -1,20 +1,34 @@
 const ChildContract = artifacts.require("ChildContract");
 
-contract("ChildContract", accounts => {
-    it("should return true when called by the contract owner", () => {
-        let permitted;
-        ChildContract.new(accounts[0]) // The contract owner.
-        .then(instance =>{
-            permitted = instance.permitted.call([]);
+contract("ChildContract", () => {
+    let child;
+    let accounts;
+    context('child', async function() {
+        beforeEach(async function(){
+            accounts = await web3.eth.getAccounts();
+            child = await ChildContract.new(accounts[0]);
         })
-        assert(permitted, true);
+        it("should return true when called by the contract owner", () => {
+            child.permitted().then(result =>
+                    assert.isFalse(result)
+                );
+            child.permitted().then(result =>
+                assert.isTrue(result)
+            );                
+            child.permitted.call().then(result =>
+                assert.isFalse(result)
+            );
+            child.permitted.call().then(result =>
+                assert.isTrue(result)
+            );      
+        });
     });
-    it("should throw when called by another address", () => {
-        let permitted;
-        ChildContract.new(accounts[1]) // Not the contract owner.
-        .then(instance =>{
-            permitted = instance.permitted.call([]);
-        })
-        assert.instanceOf(permitted, Error);
-    });
+    // it("should throw when called by another address", () => {
+    //     let permitted;
+    //      // Not the contract owner.
+    //     await child.then(instance =>{
+    //         permitted = instance.permitted.call([]);
+    //     })
+    //     assert.instanceOf(permitted, Error);
+    // });
 })

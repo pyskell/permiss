@@ -5,7 +5,7 @@ import "./PermissAbstract.sol";
 // Below is the simplest of contracts, checks for a transaction from a single authorized party.
 contract ChildContract is PermissAbstract{
     address _owner;
-    constructor(address owner) public PermissAbstract(address(this)){
+    constructor(address owner) public PermissAbstract(){
         _owner = owner;
     }
 
@@ -14,17 +14,17 @@ contract ChildContract is PermissAbstract{
         _;
     }
 
-    function _permitted(bytes32[] memory _permission) internal isOwner returns(bool){
+    function permitted(bytes32[] calldata _permission) external isOwner enabledContract returns(bool){
         return true;
     }
-    function _upgrade(bytes32[] memory _permission) internal isOwner returns(bool){
+    function upgrade(bytes32[] calldata _permission) external isOwner enabledContract notUpgraded uniqueUpgradeAddress returns(bool){
         return false;
         // upgrade_address = address(_permission[0]);
     }
-    function _enable(bytes32[] memory _permission) internal returns(bool){
-        revert();
+    function enable(bytes32[] calldata _permission) external returns(bool){
+        revert("Not implemented");
     }
-    function _disable(bytes32[] memory _permission) internal returns(bool){
-        revert();
+    function disable(bytes32[] calldata _permission) external enabledContract returns(bool){
+        revert("Not implemented");
     }
 }
