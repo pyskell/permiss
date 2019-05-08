@@ -6,21 +6,20 @@ contract("ChildContract", () => {
     context('child', async function() {
         beforeEach(async function(){
             accounts = await web3.eth.getAccounts();
-            child = await ChildContract.new(accounts[0]);
+            await ChildContract.new(accounts[0]).then(function(instance){child = instance});
         })
         it("should return true when called by the contract owner", () => {
-            child.permitted().then(result =>
-                    assert.isFalse(result)
-                );
-            child.permitted().then(result =>
-                assert.isTrue(result)
-            );                
-            child.permitted.call().then(result =>
-                assert.isFalse(result)
-            );
-            child.permitted.call().then(result =>
-                assert.isTrue(result)
-            );      
+            return child.permitted.call([]).then(result => assert.isTrue(result));
+            // assert.isTrue(result);
+            // child.permitted().then(result =>
+            //     assert.isTrue(result)
+            // );                
+            // child.permitted.call().then(result =>
+            //     assert.isFalse(result)
+            // );
+            // child.permitted.call().then(result =>
+            //     assert.isTrue(result)
+            // );      
         });
     });
     // it("should throw when called by another address", () => {
