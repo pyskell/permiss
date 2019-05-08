@@ -13,8 +13,10 @@ contract("ChildContract", () => {
             await child.permitted.call([]).then(result => assert.isTrue(result));     
         });
         it("should throw an error when not called by the contract owner", async () => {
-            // return child.permitted.call([],{from: accounts[1]}).then(result => await truffleAssert.reverts(result, "Permission denied. Not an owner."));
             await truffleAssert.reverts(child.permitted.call([],{from: accounts[1]}), "Permission denied. Not an owner.");
+        });
+        it("should be enabled on deployment", async () => {
+            await child.super.enabled().then(result => assert.isTrue(result));
         });
     });
 })
