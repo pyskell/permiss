@@ -1,4 +1,5 @@
 const ChildContract = artifacts.require("ChildContract");
+const truffleAssert = require('truffle-assertions');
 
 contract("ChildContract", () => {
     let child;
@@ -8,26 +9,12 @@ contract("ChildContract", () => {
             accounts = await web3.eth.getAccounts();
             await ChildContract.new(accounts[0]).then(function(instance){child = instance});
         })
-        it("should return true when called by the contract owner", () => {
-            return child.permitted.call([]).then(result => assert.isTrue(result));
-            // assert.isTrue(result);
-            // child.permitted().then(result =>
-            //     assert.isTrue(result)
-            // );                
-            // child.permitted.call().then(result =>
-            //     assert.isFalse(result)
-            // );
-            // child.permitted.call().then(result =>
-            //     assert.isTrue(result)
-            // );      
+        it("should return true when called by the contract owner", async () => {
+            await child.permitted.call([]).then(result => assert.isTrue(result));     
+        });
+        it("should throw an error when not called by the contract owner", async () => {
+            // return child.permitted.call([],{from: accounts[1]}).then(result => await truffleAssert.reverts(result, "Permission denied. Not an owner."));
+            await truffleAssert.reverts(child.permitted.call([],{from: accounts[1]}), "Permission denied. Not an owner.");
         });
     });
-    // it("should throw when called by another address", () => {
-    //     let permitted;
-    //      // Not the contract owner.
-    //     await child.then(instance =>{
-    //         permitted = instance.permitted.call([]);
-    //     })
-    //     assert.instanceOf(permitted, Error);
-    // });
 })
