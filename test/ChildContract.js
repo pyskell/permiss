@@ -16,7 +16,7 @@ contract("ChildContract", () => {
             await truffleAssert.reverts(child.permitted.call([],{from: accounts[1]}), "Permission denied. Not an owner.");
         });
         it("should be enabled on deployment", async () => {
-            await child.super.enabled().then(result => assert.isTrue(result));
+            await child.enabled().then(result => assert.isTrue(result));
         });
     });
 })

@@ -11,9 +11,16 @@ import "./ChildContract.sol";
 // We want to avoid using it in prohibitively costly ways that sacrifice privacy.
 
 contract PermissAbstract{
-    bool enabled = true;
-    address upgrade_address = address(0x0);
-    address previous_address = address(0x0);
+    bool public enabled;
+    address public upgrade_address;
+    address public previous_address;
+
+    constructor() public{
+        enabled = true;
+        upgrade_address = address(0x0);
+        previous_address = address(0x0);
+    }
+
     // ChildContract child;
 
     // constructor(address _childContractAddress) public{
