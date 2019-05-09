@@ -18,8 +18,8 @@ contract("ChildContract", () => {
         it("should be enabled on deployment", async () => {
             await child.enabled().then(result => assert.isTrue(result));
         });
-        it("should have address deployed as 0x0", async () =>{
-            await child.previous_address().then(result => assert.equal(result, 0x0));
+        it("should have upgrade_address deployed as 0x0", async () =>{
+            await child.upgrade_address().then(result => assert.equal(result, 0x0));
         })
     });
 })
