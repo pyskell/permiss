@@ -14,7 +14,7 @@ contract ChildContract is PermissAbstract{
         _;
     }
 
-    function permitted(bytes32[] calldata _permission) external isOwner enabledContract returns(bool){
+    function permitted(bytes32[] calldata _permission) external view isOwner enabledContract returns(bool){
         return true;
     }
     function upgrade(bytes32[] calldata _permission) external isOwner enabledContract notUpgraded uniqueUpgradeAddress returns(bool){
