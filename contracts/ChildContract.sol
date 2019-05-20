@@ -10,11 +10,11 @@ contract ChildContract is PermissAbstract{
     constructor(address owner, uint limit) public PermissAbstract(){
         _owner = owner;
         _limit = limit;
-        assert(_limit < 256); // Solidity (or the EVM?) only lets a function look back a max of 256 blocks
+        require(_limit < 256, "limit must be less than 256"); // Solidity (or the EVM?) only lets a function look back a max of 256 blocks
     }
 
     modifier isOwner{
-        require(msg.sender == _owner, "Permission denied. Not an owner.");
+        require(msg.sender == _owner, "Permission denied. Not an owner");
         _;
     }
 
