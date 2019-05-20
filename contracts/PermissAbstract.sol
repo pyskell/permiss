@@ -1,5 +1,5 @@
 pragma solidity >=0.5.1 <0.6.0;
-import "./ChildContract.sol";
+// import "./SingleOwner.sol";
 
 // In general these contracts are designed to be low on state usage.
 // This means that the Abstract contract is the only one intended to
@@ -20,12 +20,6 @@ contract PermissAbstract{
         upgrade_address = address(0x0);
         previous_address = address(0x0);
     }
-
-    // ChildContract child;
-
-    // constructor(address _childContractAddress) public{
-    //     child = ChildContract(_childContractAddress);
-    // }
 
     // _permissions for each contract function can be the same or different.
     // For example, maybe a minimum of 2 employees are required to call permitted().

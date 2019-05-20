@@ -3,7 +3,7 @@ import "./PermissAbstract.sol";
 
 // This is an example contract, you would alter it for the permission management you want.
 // Below is the simplest of contracts, checks for a transaction from a single authorized party.
-contract ChildContract is PermissAbstract{
+contract SingleOwner is PermissAbstract{
     address _owner;
     uint _limit; // Total number of blocks a signed message is valid for.
 
