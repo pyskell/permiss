@@ -21,11 +21,11 @@ contract MultiSig is PermissAbstract{
         // TODO: So anyone doing a reorg to exploit this is trivially discovered.
         uint nonce = uint256(_permission[0]);
         uint8 sigV = uint8(_permission[1]);
-        bytes32[] sigR = 
+        // bytes32[] sigR = 
 
-        for (uint i = 1; i < _permission.length; i++){
+        // for (uint i = 1; i < _permission.length; i++){
             
-        }
+        // }
     }
 
       // Note that address recovered from signatures must be strictly increasing, in order to prevent duplicates

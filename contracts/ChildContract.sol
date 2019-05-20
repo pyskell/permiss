@@ -5,8 +5,12 @@ import "./PermissAbstract.sol";
 // Below is the simplest of contracts, checks for a transaction from a single authorized party.
 contract ChildContract is PermissAbstract{
     address _owner;
-    constructor(address owner) public PermissAbstract(){
+    uint _limit; // Total number of blocks a signed message is valid for.
+
+    constructor(address owner, uint limit) public PermissAbstract(){
         _owner = owner;
+        _limit = limit;
+        assert(_limit < 256); // Solidity (or the EVM?) only lets a function look back a max of 256 blocks
     }
 
     modifier isOwner{
@@ -14,7 +18,16 @@ contract ChildContract is PermissAbstract{
         _;
     }
 
-    function permitted(bytes32[] calldata _permission) external view isOwner enabledContract returns(bool){
+    function permitted(bytes32 nonce) external view isOwner enabledContract returns(bool){
+        bool recentNonce = false;
+        for(uint i = 0; i < _limit; i++){
+            if(nonce == blockhash(block.number - i)){
+                recentNonce = true;
+                break;
+            }
+        }
+        if(!recentNonce){return false;}
+
         return true;
     }
     function upgrade(bytes32[] calldata _permission) external isOwner enabledContract notUpgraded uniqueUpgradeAddress returns(bool){

@@ -46,17 +46,16 @@ contract PermissAbstract{
         require(upgrade_address != previous_address, "upgrade_address cannot match previous_address");
         require(address(this) != upgrade_address, "upgrade_address cannot match the current contract address");
     }
-
     // TODO: Consider switching from returning bool to more informative messages.
     // TODO: Whatever we return must be agnostic to the user interface.
     // TODO: Perhaps a simple tuple of pass/fail (bool) and msg (string).
     // TODO: permitted() is currently a view (doesn't write data). This may not be what we want longterm.
-    function permitted(bytes32[] calldata _permission) external view returns(bool);
-    function upgrade(bytes32[] calldata _permission) external returns (bool);
+    function permitted() external view returns(bool){revert("Not implemented");}
+    function upgrade() external returns (bool){revert("Not implemented");}
     // _enable should return true if permission to enable the contract is valid.
-    function enable(bytes32[] calldata _permission) external returns(bool);
+    function enable() external returns(bool){revert("Not implemented");}
     // _disable should return true if permission to disable the contract is valid.
-    function disable(bytes32[] calldata _permission) external returns(bool);
+    function disable() external returns(bool){revert("Not implemented");}
 
 
     // function permitted(bytes32[] calldata _permission) external enabledContract returns(bool){
