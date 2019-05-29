@@ -24,8 +24,8 @@ contract("SingleOwner", () => {
 
             await so.permitted.call(old_block.hash).then(result => assert.isFalse(result));
         });
-        it("should throw an error when not called by the contract owner", async () => {
-            await truffleAssert.reverts(so.permitted.call([],{from: accounts[1]}), "Permission denied. Not an owner");
+        it("should return false when not called by the contract owner", async () => {
+            await so.permitted.call([],{from: accounts[1]}).then(result => assert.isFalse(result));
         });
         it("should be enabled on deployment", async () => {
             await so.enabled().then(result => assert.isTrue(result));
