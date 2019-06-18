@@ -21,12 +21,12 @@ bytes32 constant SALT = 0xf8fbe39436a7340acb936b269d6776f30a0c6144bcb14456ab5cc0
   uint public threshold;             // immutable state
   mapping (address => bool) isOwner; // immutable state
   address[] public ownersArr;        // immutable state
-  uint public limit;
+  uint public blockDepthLimit;
 
   bytes32 DOMAIN_SEPARATOR;          // hash for EIP712, computed from contract address
   
   // Note that owners_ must be strictly increasing, in order to prevent duplicates
-  constructor(uint threshold_, address[] memory owners_, uint chainId, uint limit_) public {
+  constructor(uint threshold_, address[] memory owners_, uint chainId, uint blockDepthLimit_) public {
     require(owners_.length <= 10 && threshold_ <= owners_.length && threshold_ > 0);
 
     address lastAdd = address(0);
@@ -37,8 +37,8 @@ bytes32 constant SALT = 0xf8fbe39436a7340acb936b269d6776f30a0c6144bcb14456ab5cc0
     }
     ownersArr = owners_;
     threshold = threshold_;
-    limit = limit_;
-    require(limit < 256, "limit must be less than 256"); // Solidity (or the EVM?) only lets a function look back a max of 256 blocks
+    blockDepthLimit = blockDepthLimit_;
+    require(blockDepthLimit < 256, "blockDepthLimit must be less than 256"); // Solidity (or the EVM?) only lets a function look back a max of 256 blocks
 
     DOMAIN_SEPARATOR = keccak256(abi.encode(EIP712DOMAINTYPE_HASH,
                                             NAME_HASH,
@@ -61,7 +61,7 @@ bytes32 constant SALT = 0xf8fbe39436a7340acb936b269d6776f30a0c6144bcb14456ab5cc0
     // Prevents replay attacks in this usecase.
     // Not safe for anything that mutates the chain.
     bool isRecentHash = false;
-    for(uint i = 0; i < limit; i++){
+    for(uint i = 0; i < blockDepthLimit; i++){
       if(recentBlockHash == blockhash(block.number - i)){
         isRecentHash = true;
         break;

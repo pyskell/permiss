@@ -4,17 +4,17 @@ import "./PermissAbstract.sol";
 // This is an example contract, you would alter it for the permission management you want.
 // Below is the simplest of contracts, checks for a transaction from a single authorized party.
 contract SingleOwner is PermissAbstract{
-    address _owner;
-    uint _limit; // Total number of blocks a signed message is valid for.
+    address owner;
+    uint blockDepthLimit; // Total number of blocks a signed message is valid for.
 
-    constructor(address owner, uint limit) public PermissAbstract(){
-        _owner = owner;
-        require(_limit < 256, "limit must be less than 256"); // Solidity (or the EVM?) only lets a function look back a max of 256 blocks
-        _limit = limit;
+    constructor(address owner_, uint blockDepthLimit_) public PermissAbstract(){
+        owner = owner_;
+        blockDepthLimit = blockDepthLimit_;
+        require(blockDepthLimit < 256, "blockDepthLimit must be less than 256"); // Solidity (or the EVM?) only lets a function look back a max of 256 blocks
     }
 
     // modifier isOwner{
-    //     require(msg.sender == _owner, "Permission denied. Not an owner");
+    //     require(msg.sender == owner, "Permission denied. Not an owner");
     //     _;
     // }
 
@@ -24,15 +24,15 @@ contract SingleOwner is PermissAbstract{
     // TODO: Double check all of these and that the right gates are implemented.
     // TODO: Some sort of templating/preprocessing
     function isOwner() internal view returns(bool){
-        if (msg.sender != _owner){return false;}
+        if (msg.sender != owner){return false;}
     }
 
     function permitted(bytes32 nonce) external view returns(bool){
-        if (msg.sender != _owner){return false;}
+        if (msg.sender != owner){return false;}
         if (!enabled){return false;}
 
         bool recentNonce = false;
-        for(uint i = 0; i < _limit; i++){
+        for(uint i = 0; i < blockDepthLimit; i++){
             if(nonce == blockhash(block.number - i)){
                 recentNonce = true;
                 break;
@@ -43,7 +43,7 @@ contract SingleOwner is PermissAbstract{
         return true;
     }
     function upgrade(bytes32[] calldata _permission) external returns(bool){
-        if (msg.sender != _owner){return false;}
+        if (msg.sender != owner){return false;}
         if (!enabled){return false;}
         if (upgrade_address != address(0x0)){return false;}
         if (upgrade_address == previous_address){return false;}
