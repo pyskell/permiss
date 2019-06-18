@@ -50,8 +50,8 @@ bytes32 constant SALT = 0xf8fbe39436a7340acb936b269d6776f30a0c6144bcb14456ab5cc0
 
   // Note that address recovered from signatures must be strictly increasing, in order to prevent duplicates
   // TODO: Maybe add a general `data` to the message
-  function execute(uint8[] memory sigV, bytes32[] memory sigR, bytes32[] memory sigS, bytes32 recentBlockHash)
-  public view returns(bool){
+  function permitted(uint8[] calldata sigV, bytes32[] calldata sigR, bytes32[] calldata sigS, bytes32 recentBlockHash)
+  external view returns(bool){
     require(sigR.length == threshold, "Signature length mismatch");
     require(sigR.length == sigS.length && sigR.length == sigV.length, "Signature length mismatch");
 
