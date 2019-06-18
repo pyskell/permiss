@@ -49,14 +49,17 @@ bytes32 constant SALT = 0xf8fbe39436a7340acb936b269d6776f30a0c6144bcb14456ab5cc0
   }
 
   // Note that address recovered from signatures must be strictly increasing, in order to prevent duplicates
-  function execute(uint8[] memory sigV, bytes32[] memory sigR, bytes32[] memory sigS, address executor, bytes32 recentBlockHash)
+  // TODO: Maybe add a general `data` to the message
+  function execute(uint8[] memory sigV, bytes32[] memory sigR, bytes32[] memory sigS, bytes32 recentBlockHash)
   public view returns(bool){
     require(sigR.length == threshold, "Signature length mismatch");
     require(sigR.length == sigS.length && sigR.length == sigV.length, "Signature length mismatch");
-    require(executor == msg.sender || executor == address(0), "Executor must be msg.sender or 0x0");
 
     bool success = false;
 
+    // Message must contain a recent block hash.
+    // Prevents replay attacks in this usecase.
+    // Not safe for anything that mutates the chain.
     bool isRecentHash = false;
     for(uint i = 0; i < limit; i++){
       if(recentBlockHash == blockhash(block.number - i)){
@@ -67,7 +70,7 @@ bytes32 constant SALT = 0xf8fbe39436a7340acb936b269d6776f30a0c6144bcb14456ab5cc0
     if(!isRecentHash){return false;}
 
     // EIP712 scheme: https://github.com/ethereum/EIPs/blob/master/EIPS/eip-712.md
-    bytes32 txInputHash = keccak256(abi.encode(TXTYPE_HASH, recentBlockHash, executor));
+    bytes32 txInputHash = keccak256(abi.encode(TXTYPE_HASH, recentBlockHash));
     bytes32 totalHash = keccak256(abi.encodePacked("\x19\x01", DOMAIN_SEPARATOR, txInputHash));
 
     address lastAdd = address(0); // cannot have address(0) as an owner
