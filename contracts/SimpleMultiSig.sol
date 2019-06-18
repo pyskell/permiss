@@ -83,8 +83,6 @@ bytes32 constant SALT = 0xf8fbe39436a7340acb936b269d6776f30a0c6144bcb14456ab5cc0
     // If we make it here all signatures are accounted for.
     // The address.call() syntax is no longer recommended, see:
     // https://github.com/ethereum/solidity/issues/2884
-    // nonce = nonce + 1;
-    // TODO: Replace nonce with checks for nonce == recentBlockHash
     // bool success = false;
     // assembly { success := call(gasLimit, destination, value, add(data, 0x20), mload(data), 0, 0) }
     success = true;
