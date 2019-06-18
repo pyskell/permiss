@@ -21,11 +21,12 @@ bytes32 constant SALT = 0xf8fbe39436a7340acb936b269d6776f30a0c6144bcb14456ab5cc0
   uint public threshold;             // immutable state
   mapping (address => bool) isOwner; // immutable state
   address[] public ownersArr;        // immutable state
+  uint public limit;
 
   bytes32 DOMAIN_SEPARATOR;          // hash for EIP712, computed from contract address
   
   // Note that owners_ must be strictly increasing, in order to prevent duplicates
-  constructor(uint threshold_, address[] memory owners_, uint chainId) public {
+  constructor(uint threshold_, address[] memory owners_, uint chainId, uint limit_) public {
     require(owners_.length <= 10 && threshold_ <= owners_.length && threshold_ > 0);
 
     address lastAdd = address(0);
@@ -36,6 +37,8 @@ bytes32 constant SALT = 0xf8fbe39436a7340acb936b269d6776f30a0c6144bcb14456ab5cc0
     }
     ownersArr = owners_;
     threshold = threshold_;
+    limit = limit_;
+    require(limit < 256, "limit must be less than 256"); // Solidity (or the EVM?) only lets a function look back a max of 256 blocks
 
     DOMAIN_SEPARATOR = keccak256(abi.encode(EIP712DOMAINTYPE_HASH,
                                             NAME_HASH,
@@ -46,15 +49,25 @@ bytes32 constant SALT = 0xf8fbe39436a7340acb936b269d6776f30a0c6144bcb14456ab5cc0
   }
 
   // Note that address recovered from signatures must be strictly increasing, in order to prevent duplicates
-  function execute(uint8[] memory sigV, bytes32[] memory sigR, bytes32[] memory sigS,
-  address destination, uint value, bytes memory data, address executor, uint gasLimit)
-  public returns(bool){
+  function execute(uint8[] memory sigV, bytes32[] memory sigR, bytes32[] memory sigS, address executor, bytes32 recentBlockHash)
+  public view returns(bool){
     require(sigR.length == threshold, "Signature length mismatch");
     require(sigR.length == sigS.length && sigR.length == sigV.length, "Signature length mismatch");
     require(executor == msg.sender || executor == address(0), "Executor must be msg.sender or 0x0");
 
+    bool success = false;
+
+    bool isRecentHash = false;
+    for(uint i = 0; i < limit; i++){
+      if(recentBlockHash == blockhash(block.number - i)){
+        isRecentHash = true;
+        break;
+      }
+    }
+    if(!isRecentHash){return false;}
+
     // EIP712 scheme: https://github.com/ethereum/EIPs/blob/master/EIPS/eip-712.md
-    bytes32 txInputHash = keccak256(abi.encode(TXTYPE_HASH, destination, value, keccak256(data), nonce, executor, gasLimit));
+    bytes32 txInputHash = keccak256(abi.encode(TXTYPE_HASH, recentBlockHash, executor));
     bytes32 totalHash = keccak256(abi.encodePacked("\x19\x01", DOMAIN_SEPARATOR, txInputHash));
 
     address lastAdd = address(0); // cannot have address(0) as an owner
@@ -64,14 +77,14 @@ bytes32 constant SALT = 0xf8fbe39436a7340acb936b269d6776f30a0c6144bcb14456ab5cc0
       require(isOwner[recovered], "Signature is not an owner");
       lastAdd = recovered;
     }
-
     // If we make it here all signatures are accounted for.
     // The address.call() syntax is no longer recommended, see:
     // https://github.com/ethereum/solidity/issues/2884
     // nonce = nonce + 1;
     // TODO: Replace nonce with checks for nonce == recentBlockHash
-    bool success = false;
-    assembly { success := call(gasLimit, destination, value, add(data, 0x20), mload(data), 0, 0) }
+    // bool success = false;
+    // assembly { success := call(gasLimit, destination, value, add(data, 0x20), mload(data), 0, 0) }
+    success = true;
     return success;
   }
 
