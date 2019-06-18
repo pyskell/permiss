@@ -46,10 +46,12 @@ bytes32 constant SALT = 0xf8fbe39436a7340acb936b269d6776f30a0c6144bcb14456ab5cc0
   }
 
   // Note that address recovered from signatures must be strictly increasing, in order to prevent duplicates
-  function execute(uint8[] sigV, bytes32[] sigR, bytes32[] sigS, address destination, uint value, bytes data, address executor, uint gasLimit) public {
-    require(sigR.length == threshold);
-    require(sigR.length == sigS.length && sigR.length == sigV.length);
-    require(executor == msg.sender || executor == address(0));
+  function execute(uint8[] memory sigV, bytes32[] memory sigR, bytes32[] memory sigS,
+  address destination, uint value, bytes memory data, address executor, uint gasLimit)
+  public returns(bool){
+    require(sigR.length == threshold, "Signature length mismatch");
+    require(sigR.length == sigS.length && sigR.length == sigV.length, "Signature length mismatch");
+    require(executor == msg.sender || executor == address(0), "Executor must be msg.sender or 0x0");
 
     // EIP712 scheme: https://github.com/ethereum/EIPs/blob/master/EIPS/eip-712.md
     bytes32 txInputHash = keccak256(abi.encode(TXTYPE_HASH, destination, value, keccak256(data), nonce, executor, gasLimit));
@@ -58,17 +60,19 @@ bytes32 constant SALT = 0xf8fbe39436a7340acb936b269d6776f30a0c6144bcb14456ab5cc0
     address lastAdd = address(0); // cannot have address(0) as an owner
     for (uint i = 0; i < threshold; i++) {
       address recovered = ecrecover(totalHash, sigV[i], sigR[i], sigS[i]);
-      require(recovered > lastAdd && isOwner[recovered]);
+      require(recovered > lastAdd, "Signatures must be in increasing order");
+      require(isOwner[recovered], "Signature is not an owner");
       lastAdd = recovered;
     }
 
     // If we make it here all signatures are accounted for.
     // The address.call() syntax is no longer recommended, see:
     // https://github.com/ethereum/solidity/issues/2884
-    nonce = nonce + 1;
+    // nonce = nonce + 1;
+    // TODO: Replace nonce with checks for nonce == recentBlockHash
     bool success = false;
     assembly { success := call(gasLimit, destination, value, add(data, 0x20), mload(data), 0, 0) }
-    require(success);
+    return success;
   }
 
   function () payable external {}
