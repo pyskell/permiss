@@ -7,7 +7,7 @@ const web3SendTransaction = Promise.promisify(web3.eth.sendTransaction)
 const web3GetBalance = Promise.promisify(web3.eth.getBalance)
 
 let DOMAIN_SEPARATOR
-const TXTYPE_HASH = '0x25b06799e11dd34ba11bd413631ac85a1e581c69a922f1d6fd4e1a629d013dee'
+const TXTYPE_HASH = '0xa854aab0e9996164a2886405dd72fde29b74f26301bf5926ec701aeb32c619a5'
 const NAME_HASH = '0x9773e0d7c916ed15feec0ac59e564d01cd7e20fe1f2f6c6510e865ee40fbe52f'
 const VERSION_HASH = '0xc89efdaa54c0f20c7adf612882df0950f5a951637e0307cdcb4c672f298b8bc6'
 const EIP712DOMAINTYPE_HASH = '0xd87cd6ef79d4e2b95e15ce8abf732db51ec771f1ca2edccf22a46c729ac56472'

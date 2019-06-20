@@ -12,8 +12,8 @@ bytes32 constant NAME_HASH = 0x9773e0d7c916ed15feec0ac59e564d01cd7e20fe1f2f6c651
 // kekkac256("1")
 bytes32 constant VERSION_HASH = 0xc89efdaa54c0f20c7adf612882df0950f5a951637e0307cdcb4c672f298b8bc6;
 
-// kekkac256("PermissMultisigTransaction(uint256 nonce)")
-bytes32 constant TXTYPE_HASH = 0x25b06799e11dd34ba11bd413631ac85a1e581c69a922f1d6fd4e1a629d013dee;
+// kekkac256("PermissMultisigTransaction(bytes32 recentBlockHash)")
+bytes32 constant TXTYPE_HASH = 0xa854aab0e9996164a2886405dd72fde29b74f26301bf5926ec701aeb32c619a5;
 
 bytes32 constant SALT = 0xf8fbe39436a7340acb936b269d6776f30a0c6144bcb14456ab5cc0bcf5a30c50;
 
