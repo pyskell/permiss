@@ -22,8 +22,16 @@ contract('SimpleMultiSig', function(accounts) {
   let keyFromPw
   let acct
   let lw
+  
+  beforeEach(async function() {
+    // TODO: If our test blockchain has <50 blocks then this won't work.
+    // Need to check for this and get the test chain to "mine" >50 blocks if that's the case.
+    const LATEST_BLOCK = await web3.eth.getBlock("latest");
+    const RECENT_BLOCK = await web3.eth.getBlock(latest_block.number - 10);
+    const OLD_BLOCK = await web3.eth.getBlock(latest_block.number - 50);
+  });
 
-  let createSigs = function(signers, multisigAddr, nonce, destinationAddr, value, data, executor, gasLimit) {
+  let createSigs = function(signers, multisigAddr, recentBlockHash) {
 
     const domainData = EIP712DOMAINTYPE_HASH + NAME_HASH.slice(2) + VERSION_HASH.slice(2) + CHAINID.toString('16').padStart(64, '0') + multisigAddr.slice(2).padStart(64, '0') + SALT.slice(2)
     DOMAIN_SEPARATOR = web3.sha3(domainData, {encoding: 'hex'})
@@ -87,7 +95,7 @@ contract('SimpleMultiSig', function(accounts) {
 
     let value = web3.toWei(web3.toBigNumber(0.01), 'ether')
 
-    let sigs = createSigs(signers, multisig.address, nonce, randomAddr, value, '', executor, 21000)
+    let sigs = createSigs(signers, multisig.address, RECENT_BLOCK.hash)
 
     await multisig.execute(sigs.sigV, sigs.sigR, sigs.sigS, randomAddr, value, '', executor, 21000, {from: msgSender, gasLimit: 1000000})
 
@@ -101,7 +109,7 @@ contract('SimpleMultiSig', function(accounts) {
 
     // Send again
     // Check that it succeeds with executor = Zero address
-    sigs = createSigs(signers, multisig.address, nonce, randomAddr, value, '', ZEROADDR, 21000)
+    sigs = createSigs(signers, multisig.address, RECENT_BLOCK.hash)
     await multisig.execute(sigs.sigV, sigs.sigR, sigs.sigS, randomAddr, value, '', ZEROADDR, 21000, {from: msgSender, gasLimit: 1000000})
 
     // Check funds
@@ -118,7 +126,7 @@ contract('SimpleMultiSig', function(accounts) {
     let number = 12345
     let data = lightwallet.txutils._encodeFunctionTxData('register', ['uint256'], [number])
 
-    sigs = createSigs(signers, multisig.address, nonce, reg.address, value, data, executor, 100000)
+    sigs = createSigs(signers, multisig.address, RECENT_BLOCK.hash)
     await multisig.execute(sigs.sigV, sigs.sigR, sigs.sigS, reg.address, value, data, executor, 100000, {from: msgSender, gasLimit: 1000000})
 
     // Check that number has been set in registry
@@ -148,7 +156,7 @@ contract('SimpleMultiSig', function(accounts) {
 
     let randomAddr = web3.sha3(Math.random().toString()).slice(0,42)
     let value = web3.toWei(web3.toBigNumber(0.1), 'ether')
-    let sigs = createSigs(signers, multisig.address, nonce + nonceOffset, randomAddr, value, '', executor, gasLimit)
+    let sigs = createSigs(signers, multisig.address, RECENT_BLOCK.hash)
 
     let errMsg = ''
     try {
@@ -324,7 +332,7 @@ contract('SimpleMultiSig', function(accounts) {
       const gasLimit = 100000
       const signers = [acct[0]]
 
-      let sigs = createSigs(signers, walletAddress, nonce, destination, value, data, executor, gasLimit)
+      let sigs = createSigs(signers, walletAddress, RECENT_BLOCK.hash)
       
       assert.equal(sigs.sigR[0], mmSigR)
       assert.equal(sigs.sigS[0], mmSigS)
