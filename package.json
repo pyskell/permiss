@@ -26,5 +26,10 @@
   "devDependencies": {
     "eth-lightwallet": "*",
     "bluebird": "*"
-  }
+  },
+  "dependencies": {
+    "bitcore-lib": "^8.3.4",
+    "truffle-assertions": "^0.9.1"
+  },
+  "postinstall": "find ./node_modules/**/node_modules -type d -name 'bitcore-lib' -exec rm -r {} + && echo 'Deleted duplicate bitcore-libs'"
 }
