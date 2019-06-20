@@ -7,14 +7,14 @@ const web3SendTransaction = Promise.promisify(web3.eth.sendTransaction)
 const web3GetBalance = Promise.promisify(web3.eth.getBalance)
 
 let DOMAIN_SEPARATOR
-const TXTYPE_HASH = '0x3ee892349ae4bbe61dce18f95115b5dc02daf49204cc602458cd4c1f540d56d7'
-const NAME_HASH = '0xb7a0bfa1b79f2443f4d73ebb9259cddbcd510b18be6fc4da7d1aa7b1786e73e6'
+const TXTYPE_HASH = '0x25b06799e11dd34ba11bd413631ac85a1e581c69a922f1d6fd4e1a629d013dee'
+const NAME_HASH = '0x9773e0d7c916ed15feec0ac59e564d01cd7e20fe1f2f6c6510e865ee40fbe52f'
 const VERSION_HASH = '0xc89efdaa54c0f20c7adf612882df0950f5a951637e0307cdcb4c672f298b8bc6'
 const EIP712DOMAINTYPE_HASH = '0xd87cd6ef79d4e2b95e15ce8abf732db51ec771f1ca2edccf22a46c729ac56472'
-const SALT = '0x251543af6a222378665a76fe38dbceae4871a070b7fdaf5c6c30cf758dc33cc0'
+const SALT = '0xf8fbe39436a7340acb936b269d6776f30a0c6144bcb14456ab5cc0bcf5a30c50'
 
 
-const CHAINID = 1
+const CHAINID = 5777
 const ZEROADDR = '0x000000000000000000000000000000000000000000000'
 
 contract('SimpleMultiSig', function(accounts) {

@@ -1,4 +1,4 @@
-pragma solidity ^0.5.8;
+pragma solidity ^0.5.1;
 
 contract SimpleMultiSig {
 
@@ -55,8 +55,6 @@ bytes32 constant SALT = 0xf8fbe39436a7340acb936b269d6776f30a0c6144bcb14456ab5cc0
     require(sigR.length == threshold, "Signature length mismatch");
     require(sigR.length == sigS.length && sigR.length == sigV.length, "Signature length mismatch");
 
-    bool success = false;
-
     // Message must contain a recent block hash.
     // Prevents replay attacks in this usecase.
     // Not safe for anything that mutates the chain.
@@ -85,8 +83,7 @@ bytes32 constant SALT = 0xf8fbe39436a7340acb936b269d6776f30a0c6144bcb14456ab5cc0
     // https://github.com/ethereum/solidity/issues/2884
     // bool success = false;
     // assembly { success := call(gasLimit, destination, value, add(data, 0x20), mload(data), 0, 0) }
-    success = true;
-    return success;
+    return true;
   }
 
   // function () payable external {}
