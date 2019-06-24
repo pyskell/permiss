@@ -10,7 +10,7 @@ contract("SingleOwner", () => {
             await SingleOwner.new(accounts[0], 128).then(function(instance){so = instance});
         })
         it("should revert when deployed with too large of a limit", async () => {
-            await truffleAssert.reverts(SingleOwner.new(accounts[0], 512), "limit must be less than 256")
+            await truffleAssert.reverts(SingleOwner.new(accounts[0], 512), "blockDepthLimit must be less than 256")
         })
         it("should return true when called by the contract owner with a recent blockhash", async () => {
             let latest_block = await web3.eth.getBlock("latest");
