@@ -296,7 +296,7 @@ contract('SimpleMultiSig', function(accounts) {
     })
 
     it("uses correct hash for NAME", (done) => {
-      assert.equal(web3.utils.sha3('Simple MultiSig'), NAME_HASH)
+      assert.equal(web3.utils.sha3('Permiss MultiSig'), NAME_HASH)
       done()
     })
 
@@ -306,7 +306,7 @@ contract('SimpleMultiSig', function(accounts) {
     })
 
     it("uses correct hash for MULTISIGTX", (done) => {
-      const multiSigTxType = 'MultiSigTransaction(address destination,uint256 value,bytes data,uint256 nonce,address executor,uint256 gasLimit)'
+      const multiSigTxType = 'PermissMultisigTransaction(bytes32 recentBlockHash)'
       assert.equal(web3.utils.sha3(multiSigTxType), TXTYPE_HASH)
       done()
     })
