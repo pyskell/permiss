@@ -77,6 +77,7 @@ contract('SimpleMultiSig', function(accounts) {
     let randomAddr = web3.utils.sha3(Math.random().toString()).slice(0,42)
     let executor = accounts[0]
     let msgSender = accounts[0]
+    let owners_ehh = await multisig.ownersArr.call(0)
 
     // TODO: If our test blockchain has <50 blocks then this won't work.
     // Need to check for this and get the test chain to "mine" >50 blocks if that's the case.
@@ -102,8 +103,13 @@ contract('SimpleMultiSig', function(accounts) {
     // let value = web3.utils.toWei(web3.utils.toBN(0.01), 'ether')
 
     let sigs = createSigs(signers, multisig.address, RECENT_BLOCK.hash)
+    
+    let ehh = await multisig.ownersArr.then(result => {return result})
+    console.log()
+    console.log("")
 
     await multisig.permitted(sigs.sigV, sigs.sigR, sigs.sigS, RECENT_BLOCK.hash, {from: msgSender, gasLimit: 1000000}).then(result => assert.isTrue(result))
+
 
     // // Check funds sent
     // bal = await web3GetBalance(randomAddr)
@@ -224,6 +230,7 @@ contract('SimpleMultiSig', function(accounts) {
     it("should succeed with signers 0, 1", (done) => {
       let signers = [acct[0], acct[1]]
       signers.sort()
+      console.log(acct[0])
       executeSendSuccess(acct.slice(0,3), 2, signers, done)
     })
 

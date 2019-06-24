@@ -1,3 +1,7 @@
 node_modules
 build
 *.orig
+.nyc_output
+.vscode
+coverage/
+package.json
