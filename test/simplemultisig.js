@@ -277,45 +277,46 @@ contract('SimpleMultiSig', function(accounts) {
       done()
     })
 
-    it("uses correct hash for MULTISIGTX", (done) => {
+    it("uses correct hash for PERMISSMULTISIGTX", (done) => {
       const multiSigTxType = 'PermissMultisigTransaction(bytes32 recentBlockHash)'
       assert.equal(web3.utils.sha3(multiSigTxType), TXTYPE_HASH)
       done()
     })
   })
 
-  describe("Browser MetaMask test", () => {
-    it("Matches the signature from MetaMask", (done) => {
+  // TODO: Maybe support MetaMask, prefer to have custom-rolled interfaces
+  // describe("Browser MetaMask test", () => {
+  //   it("Matches the signature from MetaMask", (done) => {
 
-      // To test in MetaMask:
-      //
-      // Import the following private key in MetaMask:
-      // 0x022257944893befdd9089259c60346fe12b47621cb58670670dd21dc2fd15674c9
-      // It should give the address:
-      // 0x01BF9878a7099b2203838f3a8E7652Ad7B127A26
-      //
-      // Make sure you are on Mainnet with the above account
-      // Load the HTML page located at
-      // browsertest/index.html
-      // and click "Sign data" (using the default values).
-      // You should see the signature values r,s,v below:
+  //     // To test in MetaMask:
+  //     //
+  //     // Import the following private key in MetaMask:
+  //     // 92525a72c0af73fc68bd2d759a082b797e8c7e638e2fd7371e77c503b957f4b1
+  //     // It should give the address:
+  //     // 0x9d42A32ba574D25d2bd6cc002a5d54a424Cdb55d
+  //     //
+  //     // Make sure you are on Mainnet with the above account
+  //     // Load the HTML page located at
+  //     // browsertest/index.html
+  //     // and click "Sign data" (using the default values).
+  //     // You should see the signature values r,s,v below:
 
-      const mmSigR = '0x91a622ccbd1c65debc16cfa1761b6200acc42099a19d753c7c59ceb12a8f5cfc'
-      const mmSigS = '0x6814fae69a6cc506b11adf971ca233fbcdbdca312ab96a58eb6b6b6792771fd4'
-      const mmSigV = 27
+  //     const mmSigR = '0x91a622ccbd1c65debc16cfa1761b6200acc42099a19d753c7c59ceb12a8f5cfc'
+  //     const mmSigS = '0x6814fae69a6cc506b11adf971ca233fbcdbdca312ab96a58eb6b6b6792771fd4'
+  //     const mmSigV = 27
 
-      const walletAddress = '0xe3de7de481cbde9b4d5f62c6d228ec62277560c8'
-      const signers = [acct[0]]
+  //     const walletAddress = '0xe3de7de481cbde9b4d5f62c6d228ec62277560c8'
+  //     const signers = [acct[0]]
 
-      let sigs = createSigs(signers, walletAddress, recent_block.hash)
+  //     let sigs = createSigs(signers, walletAddress, recent_block.hash)
       
-      assert.equal(sigs.sigR[0], mmSigR)
-      assert.equal(sigs.sigS[0], mmSigS)
-      assert.equal(sigs.sigV[0], mmSigV)
+  //     assert.equal(sigs.sigR[0], mmSigR)
+  //     assert.equal(sigs.sigS[0], mmSigS)
+  //     assert.equal(sigs.sigV[0], mmSigV)
       
-      done()
-    })
-  })
+  //     done()
+  //   })
+  // })
 
   
   
