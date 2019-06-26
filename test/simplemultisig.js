@@ -205,25 +205,25 @@ contract('SimpleMultiSig', function(accounts) {
     it("should fail due to non-owner signer", (done) => {
       let signers = [acct[0], acct[3]]
       signers.sort()
-      executeSendFailure(acct.slice(0,3), 2, signers, done)
+      executeSendFailure(acct.slice(0,3), 2, signers, recent_block.hash, done)
     })
 
     it("should fail with more signers than threshold", (done) => {
-      executeSendFailure(acct.slice(0,3), 2, acct.slice(0,3), done)
+      executeSendFailure(acct.slice(0,3), 2, acct.slice(0,3), recent_block.hash, done)
     })
 
     it("should fail with fewer signers than threshold", (done) => {
-      executeSendFailure(acct.slice(0,3), 2, [acct[0]], done)
+      executeSendFailure(acct.slice(0,3), 2, [acct[0]], recent_block.hash, done)
     })
 
     it("should fail with one signer signing twice", (done) => {
-      executeSendFailure(acct.slice(0,3), 2, [acct[0], acct[0]], done)
+      executeSendFailure(acct.slice(0,3), 2, [acct[0], acct[0]], recent_block.hash, done)
     })
 
     it("should fail with signers in wrong order", (done) => {
       let signers = [acct[0], acct[1]]
       signers.sort().reverse() //opposite order it should be
-      executeSendFailure(acct.slice(0,3), 2, signers, done)
+      executeSendFailure(acct.slice(0,3), 2, signers, recent_block.hash, done)
     })
 
     it("should fail with old blockHash", (done) => {

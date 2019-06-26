@@ -53,8 +53,12 @@ bytes32 constant SALT = 0xf8fbe39436a7340acb936b269d6776f30a0c6144bcb14456ab5cc0
   // TODO: May want to make all requires return false when failing
   function permitted(uint8[] calldata sigV, bytes32[] calldata sigR, bytes32[] calldata sigS, bytes32 recentBlockHash)
   external view returns(bool){
-    require(sigR.length == threshold, "Signature length mismatch");
-    require(sigR.length == sigS.length && sigR.length == sigV.length, "Signature length mismatch");
+
+    if (sigR.length != threshold) {return false;} // Signature length mismatch
+    if (sigR.length != sigS.length || sigR.length != sigV.length) {return false;} // Signature length mismatch
+
+    // require(sigR.length == threshold, "Signature length mismatch");
+    // require(sigR.length == sigS.length && sigR.length == sigV.length, "Signature length mismatch");
 
     // Message must contain a recent block hash.
     // Prevents replay attacks in this usecase.
@@ -66,7 +70,7 @@ bytes32 constant SALT = 0xf8fbe39436a7340acb936b269d6776f30a0c6144bcb14456ab5cc0
         break;
       }
     }
-    if(!isRecentHash){return false;}
+    if(!isRecentHash){return false;} // Must include a recent block hash
 
     // EIP712 scheme: https://github.com/ethereum/EIPs/blob/master/EIPS/eip-712.md
     bytes32 txInputHash = keccak256(abi.encode(TXTYPE_HASH, recentBlockHash));
@@ -75,8 +79,12 @@ bytes32 constant SALT = 0xf8fbe39436a7340acb936b269d6776f30a0c6144bcb14456ab5cc0
     address lastAdd = address(0); // cannot have address(0) as an owner
     for (uint i = 0; i < threshold; i++) {
       address recovered = ecrecover(totalHash, sigV[i], sigR[i], sigS[i]);
-      require(recovered > lastAdd, "Signatures must be in increasing order");
-      require(isOwner[recovered], "Signature is not an owner");
+
+      if (recovered <= lastAdd){return false;} // Signatures must be in increasing order
+      if (!isOwner[recovered]){return false;} // Signature is not an owner
+
+      // require(recovered > lastAdd, "Signatures must be in increasing order");
+      // require(isOwner[recovered], "Signature is not an owner");
       lastAdd = recovered;
     }
 
