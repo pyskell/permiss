@@ -111,12 +111,6 @@ contract('SimpleMultiSig', function(accounts) {
     let multisig = await SimpleMultiSig.new(threshold, owners, CHAINID, 128, {from: accounts[0]})
     let msgSender = accounts[0]
 
-    // TODO: If our test blockchain has <50 blocks then this won't work.
-    // Need to check for this and get the test chain to "mine" >50 blocks if that's the case.
-    let latest_block = await web3.eth.getBlock("latest");
-    let recent_block = await web3.eth.getBlock(latest_block.number - 10);
-    let old_block = await web3.eth.getBlock(latest_block.number - 180);
-
     // let nonce = await multisig.nonce.call()
     // assert.equal(nonce.toNumber(), 0)
 
@@ -125,17 +119,19 @@ contract('SimpleMultiSig', function(accounts) {
 
     // let randomAddr = web3.utils.sha3(Math.random().toString()).slice(0,42)
     // let value = web3.utils.toWei(web3.utils.toBN(0.1), 'ether')
-    let sigs = createSigs(signers, multisig.address, recent_block.hash)
+    let sigs = createSigs(signers, multisig.address, blockHash)
 
-    let errMsg = ''
-    try {
-      await multisig.execute(sigs.sigV, sigs.sigR, sigs.sigS, randomAddr, value, '', executor, gasLimit, {from: executor, gasLimit: 1000000})
-    }
-    catch(error) {
-      errMsg = error.message
-    }
+    await multisig.permitted(sigs.sigV, sigs.sigR, sigs.sigS, blockHash, {from: msgSender}).then(result => assert.isFalse(result))
 
-    assert.equal(errMsg, 'VM Exception while processing transaction: revert', 'Test did not throw')
+    // let errMsg = ''
+    // try {
+    //   await multisig.execute(sigs.sigV, sigs.sigR, sigs.sigS, blockHash, {from: msgSender})
+    // }
+    // catch(error) {
+    //   errMsg = error.message
+    // }
+
+    // assert.equal(errMsg, 'VM Exception while processing transaction: revert', 'Test did not throw')
 
     done()
   }
@@ -230,9 +226,10 @@ contract('SimpleMultiSig', function(accounts) {
       executeSendFailure(acct.slice(0,3), 2, signers, done)
     })
 
-    it("should fail with the wrong nonce", (done) => {
-      const nonceOffset = 1
-      executeSendFailure(acct.slice(0,3), 2, [acct[0], acct[1]], nonceOffset, accounts[0], 100000, done)
+    it("should fail with old blockHash", (done) => {
+      let signers = [acct[0], acct[1]]
+      signers.sort()
+      executeSendFailure(acct.slice(0,3), 2, signers, old_block.hash, done)
     })
     
   })  
