@@ -29,6 +29,7 @@ contract('SimpleMultiSig', function(accounts) {
 
   let createSigs = function(signers, multisigAddr, blockHash) {
 
+    // FYI .slice(2) is used here to remove the 0x prefix from all but the first hash of each variable
     const domainData = EIP712DOMAINTYPE_HASH + NAME_HASH.slice(2) + VERSION_HASH.slice(2) + CHAINID.toString('16').padStart(64, '0') + multisigAddr.slice(2).padStart(64, '0') + SALT.slice(2)
     DOMAIN_SEPARATOR = web3.utils.sha3(domainData, {encoding: 'hex'})
 
@@ -277,7 +278,7 @@ contract('SimpleMultiSig', function(accounts) {
     })
 
     it("uses correct hash for MULTISIGTX", (done) => {
-      const multiSigTxType = 'PermissMultisigTransaction(bytes32 blockHash)'
+      const multiSigTxType = 'PermissMultisigTransaction(bytes32 recentBlockHash)'
       assert.equal(web3.utils.sha3(multiSigTxType), TXTYPE_HASH)
       done()
     })
