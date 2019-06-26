@@ -136,16 +136,16 @@ contract('SimpleMultiSig', function(accounts) {
     done()
   }
 
-  let creationFailure = async function(owners, threshold, done) {
+  let creationFailure = async function(owners, threshold, blockDepthLimit, reason, done) {
 
     try {
-      await SimpleMultiSig.new(threshold, owners, CHAINID, {from: accounts[0]})
+      await SimpleMultiSig.new(threshold, owners, CHAINID, blockDepthLimit, {from: accounts[0]})
     }
     catch(error) {
       errMsg = error.message
     }
 
-    assert.equal(errMsg, 'VM Exception while processing transaction: revert', 'Test did not throw')
+    assert.equal(errMsg, reason, 'Test did not throw')
 
     done()
   }
@@ -236,19 +236,26 @@ contract('SimpleMultiSig', function(accounts) {
 
   describe("Edge cases", () => {
     it("should succeed with 10 owners, 10 signers", (done) => {
-      executeSendSuccess(acct.slice(0,10), 10, acct.slice(0,10), done)
+      executeSendSuccess(acct.slice(0,10), 10, acct.slice(0,10), recent_block.hash, done)
     })
 
     it("should fail to create with signers 0, 0, 2, and threshold 3", (done) => { 
-      creationFailure([acct[0],acct[0],acct[2]], 3, done)
+      let expectedReason = "Returned error: VM Exception while processing transaction: revert"
+      creationFailure([acct[0],acct[0],acct[2]], 3, 128, expectedReason, done)
     })
 
     it("should fail with 0 signers", (done) => {
-      executeSendFailure(acct.slice(0,3), 2, [], done)
+      executeSendFailure(acct.slice(0,3), 2, [], recent_block.hash, done)
     })
 
     it("should fail with 11 owners", (done) => {
-      creationFailure(acct.slice(0,11), 2, done)
+      let expectedReason = "Returned error: VM Exception while processing transaction: revert"
+      creationFailure(acct.slice(0,11), 2, 128, expectedReason, done)
+    })
+
+    it("should fail with too high of a blockDepthLimit", (done) =>{
+      let expectedReason = "Returned error: VM Exception while processing transaction: revert blockDepthLimit must be less than 256 -- Reason given: blockDepthLimit must be less than 256."
+      creationFailure(acct.slice(0,3), 2, 256, expectedReason, done)
     })
   })
 
