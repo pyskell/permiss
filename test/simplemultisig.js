@@ -36,7 +36,7 @@ contract('SimpleMultiSig', function(accounts) {
     const domainData = EIP712DOMAINTYPE_HASH + NAME_HASH.slice(2) + VERSION_HASH.slice(2) + CHAINID.toString('16').padStart(64, '0') + multisigAddr.slice(2).padStart(64, '0') + SALT.slice(2)
     DOMAIN_SEPARATOR = web3.utils.sha3(domainData, {encoding: 'hex'})
 
-    let txInput = TXTYPE_HASH + recentBlockHash.toString('hex')
+    let txInput = TXTYPE_HASH + recentBlockHash.slice(2)
     let txInputHash = web3.utils.sha3(txInput, {encoding: 'hex'})
     
     let input = '0x19' + '01' + DOMAIN_SEPARATOR.slice(2) + txInputHash.slice(2)
@@ -104,8 +104,7 @@ contract('SimpleMultiSig', function(accounts) {
     // console.log()
     // console.log("")
 
-    await multisig.permitted(sigs.sigV, sigs.sigR, sigs.sigS, sigs.hashed_message, {from: msgSender}).then(result => assert.isTrue(result))
-
+    await multisig.permitted(sigs.sigV, sigs.sigR, sigs.sigS, recent_block.hash, {from: msgSender}).then(result => assert.isTrue(result))
 
     // // Check funds sent
     // bal = await web3GetBalance(randomAddr)
