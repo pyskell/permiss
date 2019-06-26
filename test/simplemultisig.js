@@ -1,10 +1,5 @@
 var SimpleMultiSig = artifacts.require("./SimpleMultiSig.sol")
-var TestRegistry = artifacts.require("./TestRegistry.sol")
 var lightwallet = require('eth-lightwallet')
-const Promise = require('bluebird')
-
-const web3SendTransaction = Promise.promisify(web3.eth.sendTransaction)
-const web3GetBalance = Promise.promisify(web3.eth.getBalance)
 
 let DOMAIN_SEPARATOR
 const TXTYPE_HASH = '0xa854aab0e9996164a2886405dd72fde29b74f26301bf5926ec701aeb32c619a5'
@@ -13,9 +8,7 @@ const VERSION_HASH = '0xc89efdaa54c0f20c7adf612882df0950f5a951637e0307cdcb4c672f
 const EIP712DOMAINTYPE_HASH = '0xd87cd6ef79d4e2b95e15ce8abf732db51ec771f1ca2edccf22a46c729ac56472'
 const SALT = '0xf8fbe39436a7340acb936b269d6776f30a0c6144bcb14456ab5cc0bcf5a30c50'
 
-
 const CHAINID = 5777
-const ZEROADDR = '0x000000000000000000000000000000000000000000000'
 
 let latest_block
 let recent_block
@@ -112,27 +105,9 @@ contract('SimpleMultiSig', function(accounts) {
     let multisig = await SimpleMultiSig.new(threshold, owners, CHAINID, 128, {from: accounts[0]})
     let msgSender = accounts[0]
 
-    // let nonce = await multisig.nonce.call()
-    // assert.equal(nonce.toNumber(), 0)
-
-    // // Receive funds
-    // await web3SendTransaction({from: accounts[0], to: multisig.address, value: web3.utils.toWei(web3.utils.toBN(2), 'ether')})
-
-    // let randomAddr = web3.utils.sha3(Math.random().toString()).slice(0,42)
-    // let value = web3.utils.toWei(web3.utils.toBN(0.1), 'ether')
     let sigs = createSigs(signers, multisig.address, blockHash)
 
     await multisig.permitted(sigs.sigV, sigs.sigR, sigs.sigS, blockHash, {from: msgSender}).then(result => assert.isFalse(result))
-
-    // let errMsg = ''
-    // try {
-    //   await multisig.execute(sigs.sigV, sigs.sigR, sigs.sigS, blockHash, {from: msgSender})
-    // }
-    // catch(error) {
-    //   errMsg = error.message
-    // }
-
-    // assert.equal(errMsg, 'VM Exception while processing transaction: revert', 'Test did not throw')
 
     done()
   }
@@ -318,6 +293,4 @@ contract('SimpleMultiSig', function(accounts) {
   //   })
   // })
 
-  
-  
 })
