@@ -17,18 +17,22 @@ const SALT = '0xf8fbe39436a7340acb936b269d6776f30a0c6144bcb14456ab5cc0bcf5a30c50
 const CHAINID = 5777
 const ZEROADDR = '0x000000000000000000000000000000000000000000000'
 
+let latest_block
+let recent_block
+let old_block
+
 contract('SimpleMultiSig', function(accounts) {
 
   let keyFromPw
   let acct
   let lw
 
-  let createSigs = function(signers, multisigAddr, recentBlockHash) {
+  let createSigs = function(signers, multisigAddr, blockHash) {
 
     const domainData = EIP712DOMAINTYPE_HASH + NAME_HASH.slice(2) + VERSION_HASH.slice(2) + CHAINID.toString('16').padStart(64, '0') + multisigAddr.slice(2).padStart(64, '0') + SALT.slice(2)
     DOMAIN_SEPARATOR = web3.utils.sha3(domainData, {encoding: 'hex'})
 
-    let txInput = TXTYPE_HASH + recentBlockHash.slice(2)
+    let txInput = TXTYPE_HASH + blockHash.slice(2)
     let txInputHash = web3.utils.sha3(txInput, {encoding: 'hex'})
     
     let input = '0x19' + '01' + DOMAIN_SEPARATOR.slice(2) + txInputHash.slice(2)
@@ -48,27 +52,21 @@ contract('SimpleMultiSig', function(accounts) {
     if (signers[0] == acct[0]) {
       console.log("Signer: " + signers[0])
       console.log("Wallet address: " + multisigAddr)
-      console.log("recentBlockHash: " + recentBlockHash)
+      console.log("blockHash: " + blockHash)
       console.log("hash: " + hash)
       console.log("r: " + sigR[0])
       console.log("s: " + sigS[0])
       console.log("v: " + sigV[0])
     }
       
-    return {sigV: sigV, sigR: sigR, sigS: sigS, hashed_message: hash}
+    return {sigV: sigV, sigR: sigR, sigS: sigS}
 
   }
 
-  let executeSendSuccess = async function(owners, threshold, signers, done) {
+  let executeSendSuccess = async function(owners, threshold, signers, blockHash, done) {
 
     let multisig = await SimpleMultiSig.new(threshold, owners, CHAINID, 128, {from: accounts[0]})
     let msgSender = accounts[0]
-
-    // TODO: If our test blockchain has <50 blocks then this won't work.
-    // Need to check for this and get the test chain to "mine" >50 blocks if that's the case.
-    let latest_block = await web3.eth.getBlock("latest");
-    let recent_block = await web3.eth.getBlock(latest_block.number - 10);
-    let old_block = await web3.eth.getBlock(latest_block.number - 180);
 
     // check that owners are stored correctly
     for (var i=0; i<owners.length; i++) {
@@ -76,9 +74,9 @@ contract('SimpleMultiSig', function(accounts) {
       assert.equal(owners[i].toLowerCase(), ownerFromContract.toLowerCase())
     }
 
-    let sigs = createSigs(signers, multisig.address, recent_block.hash)
+    let sigs = createSigs(signers, multisig.address, blockHash)
 
-    await multisig.permitted(sigs.sigV, sigs.sigR, sigs.sigS, recent_block.hash, {from: msgSender}).then(result => assert.isTrue(result))
+    await multisig.permitted(sigs.sigV, sigs.sigR, sigs.sigS, blockHash, {from: msgSender}).then(result => assert.isTrue(result))
 
     ///////////////////////////////////////////////////////////////////////////
 
@@ -108,18 +106,25 @@ contract('SimpleMultiSig', function(accounts) {
     done()
   }
 
-  let executeSendFailure = async function(owners, threshold, signers, nonceOffset, executor, gasLimit, done) {
+  let executeSendFailure = async function(owners, threshold, signers, blockHash, done) {
 
-    let multisig = await SimpleMultiSig.new(threshold, owners, CHAINID, {from: accounts[0]})
+    let multisig = await SimpleMultiSig.new(threshold, owners, CHAINID, 128, {from: accounts[0]})
+    let msgSender = accounts[0]
 
-    let nonce = await multisig.nonce.call()
-    assert.equal(nonce.toNumber(), 0)
+    // TODO: If our test blockchain has <50 blocks then this won't work.
+    // Need to check for this and get the test chain to "mine" >50 blocks if that's the case.
+    let latest_block = await web3.eth.getBlock("latest");
+    let recent_block = await web3.eth.getBlock(latest_block.number - 10);
+    let old_block = await web3.eth.getBlock(latest_block.number - 180);
 
-    // Receive funds
-    await web3SendTransaction({from: accounts[0], to: multisig.address, value: web3.utils.toWei(web3.utils.toBN(2), 'ether')})
+    // let nonce = await multisig.nonce.call()
+    // assert.equal(nonce.toNumber(), 0)
 
-    let randomAddr = web3.utils.sha3(Math.random().toString()).slice(0,42)
-    let value = web3.utils.toWei(web3.utils.toBN(0.1), 'ether')
+    // // Receive funds
+    // await web3SendTransaction({from: accounts[0], to: multisig.address, value: web3.utils.toWei(web3.utils.toBN(2), 'ether')})
+
+    // let randomAddr = web3.utils.sha3(Math.random().toString()).slice(0,42)
+    // let value = web3.utils.toWei(web3.utils.toBN(0.1), 'ether')
     let sigs = createSigs(signers, multisig.address, recent_block.hash)
 
     let errMsg = ''
@@ -173,49 +178,56 @@ contract('SimpleMultiSig', function(accounts) {
     })
   })
 
+  beforeEach(async function(){
+    // TODO: If our test blockchain has <50 blocks then this won't work.
+    // Need to check for this and get the test chain to "mine" >50 blocks if that's the case.
+    latest_block = await web3.eth.getBlock("latest");
+    recent_block = await web3.eth.getBlock(latest_block.number - 10);
+    old_block = await web3.eth.getBlock(latest_block.number - 180);
+  })
+
   describe("3 signers, threshold 2", () => {
 
     it("should succeed with signers 0, 1", (done) => {
       let signers = [acct[0], acct[1]]
       signers.sort()
-      console.log(acct[0])
-      executeSendSuccess(acct.slice(0,3), 2, signers, done)
+      executeSendSuccess(acct.slice(0,3), 2, signers, recent_block.hash, done)
     })
 
     it("should succeed with signers 0, 2", (done) => {
       let signers = [acct[0], acct[2]]
       signers.sort()
-      executeSendSuccess(acct.slice(0,3), 2, signers, done)
+      executeSendSuccess(acct.slice(0,3), 2, signers, recent_block.hash, done)
     })
 
     it("should succeed with signers 1, 2", (done) => {
       let signers = [acct[1], acct[2]]
       signers.sort()
-      executeSendSuccess(acct.slice(0,3), 2, signers, done)
+      executeSendSuccess(acct.slice(0,3), 2, signers, recent_block.hash, done)
     })
 
     it("should fail due to non-owner signer", (done) => {
       let signers = [acct[0], acct[3]]
       signers.sort()
-      executeSendFailure(acct.slice(0,3), 2, signers, 0, accounts[0], 100000, done)
+      executeSendFailure(acct.slice(0,3), 2, signers, done)
     })
 
     it("should fail with more signers than threshold", (done) => {
-      executeSendFailure(acct.slice(0,3), 2, acct.slice(0,3), 0, accounts[0], 100000, done)
+      executeSendFailure(acct.slice(0,3), 2, acct.slice(0,3), done)
     })
 
     it("should fail with fewer signers than threshold", (done) => {
-      executeSendFailure(acct.slice(0,3), 2, [acct[0]], 0, accounts[0], 100000, done)
+      executeSendFailure(acct.slice(0,3), 2, [acct[0]], done)
     })
 
     it("should fail with one signer signing twice", (done) => {
-      executeSendFailure(acct.slice(0,3), 2, [acct[0], acct[0]], 0, accounts[0], 100000, done)
+      executeSendFailure(acct.slice(0,3), 2, [acct[0], acct[0]], done)
     })
 
     it("should fail with signers in wrong order", (done) => {
       let signers = [acct[0], acct[1]]
       signers.sort().reverse() //opposite order it should be
-      executeSendFailure(acct.slice(0,3), 2, signers, 0, accounts[0], 100000, done)
+      executeSendFailure(acct.slice(0,3), 2, signers, done)
     })
 
     it("should fail with the wrong nonce", (done) => {
@@ -235,7 +247,7 @@ contract('SimpleMultiSig', function(accounts) {
     })
 
     it("should fail with 0 signers", (done) => {
-      executeSendFailure(acct.slice(0,3), 2, [], 0, accounts[0], 100000, done)
+      executeSendFailure(acct.slice(0,3), 2, [], done)
     })
 
     it("should fail with 11 owners", (done) => {
@@ -261,7 +273,7 @@ contract('SimpleMultiSig', function(accounts) {
     })
 
     it("uses correct hash for MULTISIGTX", (done) => {
-      const multiSigTxType = 'PermissMultisigTransaction(bytes32 recentBlockHash)'
+      const multiSigTxType = 'PermissMultisigTransaction(bytes32 blockHash)'
       assert.equal(web3.utils.sha3(multiSigTxType), TXTYPE_HASH)
       done()
     })
