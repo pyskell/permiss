@@ -50,15 +50,15 @@ contract('SimpleMultiSig', function(accounts) {
       sigS.push('0x' + sig.s.toString('hex'))
     }
 
-    if (signers[0] == acct[0]) {
-      console.log("Signer: " + signers[0])
-      console.log("Wallet address: " + multisigAddr)
-      console.log("blockHash: " + blockHash)
-      console.log("hash: " + hash)
-      console.log("r: " + sigR[0])
-      console.log("s: " + sigS[0])
-      console.log("v: " + sigV[0])
-    }
+    // if (signers[0] == acct[0]) {
+    //   console.log("Signer: " + signers[0])
+    //   console.log("Wallet address: " + multisigAddr)
+    //   console.log("blockHash: " + blockHash)
+    //   console.log("hash: " + hash)
+    //   console.log("r: " + sigR[0])
+    //   console.log("s: " + sigS[0])
+    //   console.log("v: " + sigV[0])
+    // }
       
     return {sigV: sigV, sigR: sigR, sigS: sigS}
 
