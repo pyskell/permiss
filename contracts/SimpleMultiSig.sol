@@ -50,6 +50,7 @@ bytes32 constant SALT = 0xf8fbe39436a7340acb936b269d6776f30a0c6144bcb14456ab5cc0
 
   // Note that address recovered from signatures must be strictly increasing, in order to prevent duplicates
   // TODO: Maybe add a general `data` to the message
+  // TODO: May want to make all requires return false when failing
   function permitted(uint8[] calldata sigV, bytes32[] calldata sigR, bytes32[] calldata sigS, bytes32 recentBlockHash)
   external view returns(bool){
     require(sigR.length == threshold, "Signature length mismatch");
@@ -78,13 +79,10 @@ bytes32 constant SALT = 0xf8fbe39436a7340acb936b269d6776f30a0c6144bcb14456ab5cc0
       require(isOwner[recovered], "Signature is not an owner");
       lastAdd = recovered;
     }
+
     // If we make it here all signatures are accounted for.
-    // The address.call() syntax is no longer recommended, see:
-    // https://github.com/ethereum/solidity/issues/2884
-    // bool success = false;
-    // assembly { success := call(gasLimit, destination, value, add(data, 0x20), mload(data), 0, 0) }
     return true;
   }
 
-  // function () payable external {}
+  function () external {}
 }

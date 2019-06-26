@@ -22,14 +22,6 @@ contract('SimpleMultiSig', function(accounts) {
   let keyFromPw
   let acct
   let lw
-  
-  // beforeEach(async function() {
-  //   // TODO: If our test blockchain has <50 blocks then this won't work.
-  //   // Need to check for this and get the test chain to "mine" >50 blocks if that's the case.
-  //   const latest_block = await web3.eth.getBlock("latest");
-  //   const recent_block = await web3.eth.getBlock(latest_block.number - 10);
-  //   const OLD_BLOCK = await web3.eth.getBlock(latest_block.number - 50);
-  // });
 
   let createSigs = function(signers, multisigAddr, recentBlockHash) {
 
@@ -70,25 +62,13 @@ contract('SimpleMultiSig', function(accounts) {
   let executeSendSuccess = async function(owners, threshold, signers, done) {
 
     let multisig = await SimpleMultiSig.new(threshold, owners, CHAINID, 128, {from: accounts[0]})
-    let randomAddr = web3.utils.sha3(Math.random().toString()).slice(0,42)
-    let executor = accounts[0]
     let msgSender = accounts[0]
-    let owners_ehh = await multisig.ownersArr.call(0)
 
     // TODO: If our test blockchain has <50 blocks then this won't work.
     // Need to check for this and get the test chain to "mine" >50 blocks if that's the case.
     let latest_block = await web3.eth.getBlock("latest");
     let recent_block = await web3.eth.getBlock(latest_block.number - 10);
-    let old_block = await web3.eth.getBlock(latest_block.number - 50);
-    
-    // // Receive funds
-    // await web3SendTransaction({from: accounts[0], to: multisig.address, value: web3.utils.toWei(web3.utils.toBN(0.1), 'ether')})
-
-    // let nonce = await multisig.nonce.call()
-    // assert.equal(nonce.toNumber(), 0)
-
-    // let bal = await web3GetBalance(multisig.address)
-    // assert.equal(bal, web3.utils.toWei(0.1, 'ether'))
+    let old_block = await web3.eth.getBlock(latest_block.number - 180);
 
     // check that owners are stored correctly
     for (var i=0; i<owners.length; i++) {
@@ -96,36 +76,9 @@ contract('SimpleMultiSig', function(accounts) {
       assert.equal(owners[i].toLowerCase(), ownerFromContract.toLowerCase())
     }
 
-    // let value = web3.utils.toWei(web3.utils.toBN(0.01), 'ether')
-
     let sigs = createSigs(signers, multisig.address, recent_block.hash)
-    
-    // let ehh = await multisig.ownersArr.then(result => {return result})
-    // console.log()
-    // console.log("")
 
     await multisig.permitted(sigs.sigV, sigs.sigR, sigs.sigS, recent_block.hash, {from: msgSender}).then(result => assert.isTrue(result))
-
-    // // Check funds sent
-    // bal = await web3GetBalance(randomAddr)
-    // assert.equal(bal.toString(), value.toString())
-
-    // // Check nonce updated
-    // nonce = await multisig.nonce.call()
-    // assert.equal(nonce.toNumber(), 1)
-
-    // // Send again
-    // // Check that it succeeds with executor = Zero address
-    // sigs = createSigs(signers, multisig.address, recent_block.hash)
-    // await multisig.execute(sigs.sigV, sigs.sigR, sigs.sigS, recent_block.hash, {from: msgSender, gasLimit: 1000000})
-
-    // // Check funds
-    // bal = await web3GetBalance(randomAddr)
-    // assert.equal(bal.toString(), (value*2).toString())
-
-    // // Check nonce updated
-    // nonce = await multisig.nonce.call()
-    // assert.equal(nonce.toNumber(), 2)
 
     ///////////////////////////////////////////////////////////////////////////
 
@@ -335,12 +288,6 @@ contract('SimpleMultiSig', function(accounts) {
       const mmSigV = 27
 
       const walletAddress = '0xe3de7de481cbde9b4d5f62c6d228ec62277560c8'
-      const destination = '0x8582afea2dd8e47297dbcdcf9ca289756ee21430'
-      const value = web3.utils.toWei(web3.utils.toBN(0.01), 'ether')
-      const data = '0xf207564e0000000000000000000000000000000000000000000000000000000000003039'
-      const nonce = 2
-      const executor = '0x0be430662ec0659ee786c04925c0146991fbdc0f'
-      const gasLimit = 100000
       const signers = [acct[0]]
 
       let sigs = createSigs(signers, walletAddress, recent_block.hash)
