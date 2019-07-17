@@ -31,7 +31,7 @@ bytes32 constant SALT = 0xf8fbe39436a7340acb936b269d6776f30a0c6144bcb14456ab5cc0
 
     address lastAdd = address(0);
     for (uint i = 0; i < owners_.length; i++) {
-      require(owners_[i] > lastAdd);
+      require(owners_[i] > lastAdd, "owners_ must be in ascending/increasing order");
       isOwner[owners_[i]] = true;
       lastAdd = owners_[i];
     }
