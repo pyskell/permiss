@@ -52,7 +52,7 @@ bytes32 constant SALT = 0xf8fbe39436a7340acb936b269d6776f30a0c6144bcb14456ab5cc0
   // TODO: Maybe add a general `data` to the message
   // TODO: May want to make all requires return false when failing
   function permitted(uint8[] calldata sigV, bytes32[] calldata sigR, bytes32[] calldata sigS, bytes32 recentBlockHash)
-  external view returns(bool){
+  external returns(bool){
 
     if (sigR.length != threshold) {return false;} // Signature length mismatch
     if (sigR.length != sigS.length || sigR.length != sigV.length) {return false;} // Signature length mismatch
@@ -70,7 +70,8 @@ bytes32 constant SALT = 0xf8fbe39436a7340acb936b269d6776f30a0c6144bcb14456ab5cc0
         break;
       }
     }
-    if(!isRecentHash){return false;} // Must include a recent block hash
+    // if(!isRecentHash){return false;} // Must include a recent block hash
+    require(isRecentHash, "The provided recentBlockHash is either invalid or beyond the blockDepthLimit");
 
     // EIP712 scheme: https://github.com/ethereum/EIPs/blob/master/EIPS/eip-712.md
     bytes32 txInputHash = keccak256(abi.encode(TXTYPE_HASH, recentBlockHash));
@@ -80,11 +81,11 @@ bytes32 constant SALT = 0xf8fbe39436a7340acb936b269d6776f30a0c6144bcb14456ab5cc0
     for (uint i = 0; i < threshold; i++) {
       address recovered = ecrecover(totalHash, sigV[i], sigR[i], sigS[i]);
 
-      if (recovered <= lastAdd){return false;} // Signatures must be in increasing order
-      if (!isOwner[recovered]){return false;} // Signature is not an owner
+      // if (recovered <= lastAdd){return false;} // Signatures must be in increasing order
+      // if (!isOwner[recovered]){return false;} // Signature is not an owner
 
-      // require(recovered > lastAdd, "Signatures must be in increasing order");
-      // require(isOwner[recovered], "Signature is not an owner");
+      require(recovered > lastAdd, "Signatures must be in increasing order");
+      require(isOwner[recovered], "Signature is not an owner");
       lastAdd = recovered;
     }
 
