@@ -44,7 +44,7 @@ bytes32 constant SALT = 0xf8fbe39436a7340acb936b269d6776f30a0c6144bcb14456ab5cc0
                                             NAME_HASH,
                                             VERSION_HASH,
                                             chainId,
-                                            this,
+                                            address(this),
                                             SALT));
   }
 
