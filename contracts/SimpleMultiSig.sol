@@ -52,7 +52,7 @@ bytes32 constant SALT = 0xf8fbe39436a7340acb936b269d6776f30a0c6144bcb14456ab5cc0
   // TODO: Maybe add a general `data` to the message
   // TODO: May want to make all requires return false when failing
   function permitted(uint8[] calldata sigV, bytes32[] calldata sigR, bytes32[] calldata sigS, bytes32 recentBlockHash)
-  external returns(bool){
+  external view returns(bool){
 
     if (sigR.length != threshold) {return false;} // Signature length mismatch
     if (sigR.length != sigS.length || sigR.length != sigV.length) {return false;} // Signature length mismatch
