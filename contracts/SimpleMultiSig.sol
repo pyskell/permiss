@@ -62,7 +62,7 @@ bytes32 constant SALT = 0xf8fbe39436a7340acb936b269d6776f30a0c6144bcb14456ab5cc0
 
     // Message must contain a recent block hash.
     // Prevents replay attacks in this usecase.
-    // Not safe for anything that mutates the chain.
+    // Not safe for anything that mutates the chain or gets publicly broadcast.
     bool isRecentHash = false;
     for(uint i = 0; i < blockDepthLimit; i++){
       if(recentBlockHash == blockhash(block.number - i)){
