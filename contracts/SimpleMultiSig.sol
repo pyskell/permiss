@@ -44,7 +44,7 @@ bytes32 constant SALT = 0xf8fbe39436a7340acb936b269d6776f30a0c6144bcb14456ab5cc0
                                             NAME_HASH,
                                             VERSION_HASH,
                                             chainId,
-                                            this,
+                                            address(this),
                                             SALT));
   }
 
@@ -62,7 +62,7 @@ bytes32 constant SALT = 0xf8fbe39436a7340acb936b269d6776f30a0c6144bcb14456ab5cc0
 
     // Message must contain a recent block hash.
     // Prevents replay attacks in this usecase.
-    // Not safe for anything that mutates the chain.
+    // Not safe for anything that mutates the chain or gets publicly broadcast.
     bool isRecentHash = false;
     for(uint i = 0; i < blockDepthLimit; i++){
       if(recentBlockHash == blockhash(block.number - i)){
@@ -70,7 +70,8 @@ bytes32 constant SALT = 0xf8fbe39436a7340acb936b269d6776f30a0c6144bcb14456ab5cc0
         break;
       }
     }
-    if(!isRecentHash){return false;} // Must include a recent block hash
+    // if(!isRecentHash){return false;} // Must include a recent block hash
+    require(isRecentHash, "The provided recentBlockHash is either invalid or beyond the blockDepthLimit");
 
     // EIP712 scheme: https://github.com/ethereum/EIPs/blob/master/EIPS/eip-712.md
     bytes32 txInputHash = keccak256(abi.encode(TXTYPE_HASH, recentBlockHash));
@@ -80,11 +81,11 @@ bytes32 constant SALT = 0xf8fbe39436a7340acb936b269d6776f30a0c6144bcb14456ab5cc0
     for (uint i = 0; i < threshold; i++) {
       address recovered = ecrecover(totalHash, sigV[i], sigR[i], sigS[i]);
 
-      if (recovered <= lastAdd){return false;} // Signatures must be in increasing order
-      if (!isOwner[recovered]){return false;} // Signature is not an owner
+      // if (recovered <= lastAdd){return false;} // Signatures must be in increasing order
+      // if (!isOwner[recovered]){return false;} // Signature is not an owner
 
-      // require(recovered > lastAdd, "Signatures must be in increasing order");
-      // require(isOwner[recovered], "Signature is not an owner");
+      require(recovered > lastAdd, "Signatures must be in increasing order");
+      require(isOwner[recovered], "Signature is not an owner");
       lastAdd = recovered;
     }
 
