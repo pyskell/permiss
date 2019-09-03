@@ -7,10 +7,9 @@ contract("VestingSchedule", () => {
     context('basic tests', async function() {
         beforeEach(async function(){
             accounts = await web3.eth.getAccounts();
-            // await SingleOwner.new(accounts[0], 128).then(function(instance){so = instance});
         })
         it("should deploy", async () => {
-            let vs = await VestingSchedule.new(accounts[0], "test_deploy", 1000, 1, 10);
+            let vs = await VestingSchedule.new(accounts[0], "test_deploy", 1000, 1, 5);
             await vs.name().then(result => assert.equal(result, "test_deploy"));
             // assert.equal(vs.name(), "test_deploy")
         })
@@ -41,4 +40,20 @@ contract("VestingSchedule", () => {
             // await vs.vested().then(result => assert.equal(result.valueOf(), 200))
         })
     });
+
+    context("adjusting vesting schedule", async () => {
+        beforeEach(async () => {
+            accounts = await web3.eth.getAccounts();
+            vs = await VestingSchedule.new(accounts[0], "test_deploy", 1000, 1, 5)
+        })
+        it("should increase vesting year", async () => {
+            await vs.increaseYear(1, {from: accounts[0]})
+            await assert(vs.year(), 2)
+        })
+        it("should be 40% vested (400)", async () => {
+            await vs.increaseYear(1, {from: accounts[0]})
+            let result = await vs.vested()
+            await assert.equal(result.valueOf(), 400)
+        })
+    })
 })

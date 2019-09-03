@@ -4,8 +4,8 @@ contract VestingSchedule {
   string public name;
   uint256 public shares;
   // uint8 vestingRate; // 0 -> 100
-  uint16 vestingPeriod; // in years
-  uint16 year; // just for the demo, long term this needs to be generalized to a DateTime
+  uint16 public vestingPeriod; // in years
+  uint16 public year; // just for the demo, long term this needs to be generalized to a DateTime
 
   constructor (address _grantee, string memory _name, uint256 _shares, uint16 _year, uint16 _vestingPeriod) public {
     grantee = _grantee;
@@ -37,6 +37,14 @@ contract VestingSchedule {
 
   function vested() external view returns (uint256) {
     return shares * this.vestedPercent() / 100;
+  }
+
+  function increaseYear(uint16 amount) external returns(uint16) {
+    if (year + amount <= vestingPeriod) {
+      year = year + amount;
+    }
+
+    return year;
   }
 
   // function equity() external returns (uint256);
