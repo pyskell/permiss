@@ -4,8 +4,10 @@ import "./VestingSchedule.sol";
 contract CapTable{
   mapping (address=>VestingSchedule) public vestingSchedules;
 
-  function addSchedule(VestingSchedule schedule) external {
-    vestingSchedules[address(schedule.grantee)] = schedule;
+  function addSchedule(address schedule) external {
+    VestingSchedule vs = VestingSchedule(address(schedule));
+    address grantee = address(vs.grantee());
+    vestingSchedules[grantee] = vs;
   }
   // Grantee[] grantees;
 
