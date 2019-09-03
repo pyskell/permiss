@@ -1,37 +1,17 @@
-pragma solidity ^0.5.1;
+// pragma solidity ^0.5.1;
 
-interface CapInterface {
-}
+// contract CapTable{
+//   mapping (address=>VestingSchedule) vestingSchedules;
+//   // Grantee[] grantees;
 
-contract Grantee {
-  address public pubAddress;
-  VestingSchedule vestingSchedule;
-}
+//   // function getVestedPercent(Grantee grantee) public returns (uint8) {
+//   //   VestingSchedule vestingSchedule = grantee.vestingSchedule;
+//   //   uint8 vested = vestingSchedule.vestedPercent();
 
-contract CapTable is CapInterface{
-  mapping (address=>VestingSchedule) vestingSchedules;
-  Grantee[] grantees;
+//   //   return vested;
+//   // }
 
-  function getVestedPercent(Grantee grantee) public returns (uint8) {
-    VestingSchedule vestingSchedule = vestingSchedules[address(grantee.pubAddress)];
-    uint8 vested = vestingSchedule.vestedPercent();
+//   // function getMaxEquity(Grantee grantee) public returns (uint256) {
 
-    return vested;
-  }
-}
-
-contract Schedule {
-  Grantee grantee;
-  constructor (Grantee _grantee) public {
-    grantee = _grantee;
-  }
-
-  function vestedPercent() external returns (uint8); // 0 -> 100
-  function equity() external returns (uint256);
-}
-
-contract VestingSchedule is Schedule {
-  constructor (Grantee _grantee) Schedule(_grantee) public {
-
-  }
-}
+//   // }
+// }
