@@ -1,17 +1,22 @@
-// pragma solidity ^0.5.1;
+pragma solidity ^0.5.1;
+import "./VestingSchedule.sol";
 
-// contract CapTable{
-//   mapping (address=>VestingSchedule) vestingSchedules;
-//   // Grantee[] grantees;
+contract CapTable{
+  mapping (address=>VestingSchedule) public vestingSchedules;
 
-//   // function getVestedPercent(Grantee grantee) public returns (uint8) {
-//   //   VestingSchedule vestingSchedule = grantee.vestingSchedule;
-//   //   uint8 vested = vestingSchedule.vestedPercent();
+  function addSchedule(VestingSchedule schedule) external {
+    vestingSchedules[address(schedule.grantee)] = schedule;
+  }
+  // Grantee[] grantees;
 
-//   //   return vested;
-//   // }
+  // function getVestedPercent(Grantee grantee) public returns (uint8) {
+  //   VestingSchedule vestingSchedule = grantee.vestingSchedule;
+  //   uint8 vested = vestingSchedule.vestedPercent();
 
-//   // function getMaxEquity(Grantee grantee) public returns (uint256) {
+  //   return vested;
+  // }
 
-//   // }
-// }
+  // function getMaxEquity(Grantee grantee) public returns (uint256) {
+
+  // }
+}
