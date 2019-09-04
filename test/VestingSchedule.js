@@ -26,16 +26,6 @@ contract("VestingSchedule", () => {
             let result = await vs.vestedPercent()
             await assert.equal(result.valueOf(), 100)
         })
-        it("should have testDivLiteral() result in 20", async () => {
-            let vs = await VestingSchedule.new(accounts[0], ct.address, "test_deploy", 1000, 5, 5);
-            let resultLiteral = await vs.testDivLiteral()
-            await assert.equal(resultLiteral.valueOf(), 20)
-        })
-        it("should have testDivCast() result in 20", async () => {
-            let vs = await VestingSchedule.new(accounts[0], ct.address, "test_deploy", 1000, 5, 5);
-            let resultCast = await vs.testDivCast()
-            await assert.equal(resultCast.valueOf(), 20)
-        })
         it("should vest 20% per day over a period of 5 days", async () => {
             let vs = await VestingSchedule.new(accounts[0], ct.address, "test_deploy", 1000, 1, 5);
             let result = await vs.vested()
