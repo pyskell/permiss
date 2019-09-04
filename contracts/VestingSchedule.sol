@@ -1,14 +1,16 @@
 pragma solidity ^0.5.1;
 contract VestingSchedule {
   address public grantee;
+  address public capTable;
   string public name;
   uint256 public shares;
   // uint8 vestingRate; // 0 -> 100
   uint16 public vestingPeriod; // in years
   uint16 public year; // just for the demo, long term this needs to be generalized to a DateTime
 
-  constructor (address _grantee, string memory _name, uint256 _shares, uint16 _year, uint16 _vestingPeriod) public {
+  constructor (address _grantee, address _capTable, string memory _name, uint256 _shares, uint16 _year, uint16 _vestingPeriod) public {
     grantee = _grantee;
+    capTable = _capTable;
     name = _name;
     shares = _shares;
     // vestingRate = _vestingRate;

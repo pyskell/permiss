@@ -216,7 +216,7 @@ contract('SimpleMultiSig', function(accounts) {
     })
 
     it("should fail to create with signers 0, 0, 2, and threshold 3", (done) => { 
-      let expectedReason = "Returned error: VM Exception while processing transaction: revert"
+      let expectedReason = "Returned error: VM Exception while processing transaction: revert owners_ must be in ascending/increasing order -- Reason given: owners_ must be in ascending/increasing order."
       creationFailure([acct[0],acct[0],acct[2]], 3, 128, expectedReason, done)
     })
 

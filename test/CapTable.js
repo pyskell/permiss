@@ -15,7 +15,7 @@ contract("CapTable", () => {
             // assert.equal(vs.name(), "test_deploy")
         })
         it("should add a VestingSchedule", async () => {
-          let vestingSchedule = await VestingSchedule.new(accounts[0], "test_deploy", 1000, 1, 5)
+          let vestingSchedule = await VestingSchedule.new(accounts[0], ct.address, "test_deploy", 1000, 1, 5)
           await ct.addSchedule(vestingSchedule.address, {from: accounts[0]})
 
           let storedScheduleAddress = await ct.vestingSchedules.call(accounts[0])
