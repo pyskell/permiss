@@ -1,7 +1,7 @@
 pragma solidity ^0.5.1;
 contract VestingSchedule {
   address public grantee;
-  address public capTable;
+  address public owner;
   string public name;
   uint256 public shares;
   // uint8 vestingRate; // 0 -> 100
@@ -9,9 +9,9 @@ contract VestingSchedule {
   uint16 public year; // just for the demo, long term this needs to be generalized to a DateTime
   bool public disabled;
 
-  constructor (address _grantee, address _capTable, string memory _name, uint256 _shares, uint16 _year, uint16 _vestingPeriod) public {
+  constructor (address _grantee, address _owner, string memory _name, uint256 _shares, uint16 _year, uint16 _vestingPeriod) public {
     grantee = _grantee;
-    capTable = _capTable;
+    owner = _owner;
     name = _name;
     shares = _shares;
     // vestingRate = _vestingRate;
@@ -20,8 +20,9 @@ contract VestingSchedule {
     disabled = false;
   }
 
+  // TODO: Owner will eventually be generalized to be anything (ex. a multisig, or other agreement)
   modifier isOwner {
-    require(msg.sender == capTable, "Only the CapTable owning this VestingSchedule may modify it");
+    require(msg.sender == owner, "Only the owner of this VestingSchedule may modify it");
     _;
   }
 

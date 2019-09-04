@@ -24,6 +24,52 @@
 // const fs = require('fs');
 // const mnemonic = fs.readFileSync(".secret").toString().trim();
 
+// import TruffleArtifactAdapter from '@0x/sol-trace'
+
+// const projectRoot = '.'
+// const solcVersion = '0.5.1'
+// const artifactAdapter = new TruffleArtifactAdapter(projectRoot, solcVersion)
+
+// import ProviderEngine from 'web3-provider-engine'
+// import RpcSubprovider from 'web3-provider-engine'
+// import RevertTraceSubprovider from '@0x/sol-trace'
+
+// const defaultFromAddress = "0x9d42A32ba574D25d2bd6cc002a5d54a424Cdb55d" // Some ethereum address with test funds
+
+// const providerEngine = new ProviderEngine()
+
+
+
+
+const ProviderEngine = require("web3-provider-engine");
+// const WebsocketSubprovider = require("web3-provider-engine/subproviders/websocket.js")
+const RpcSubprovider = require("web3-provider-engine/subproviders/rpc.js")
+const { TruffleArtifactAdapter } = require("@0x/sol-trace");
+// const { ProfilerSubprovider } = require("@0x/sol-profiler");
+// const { CoverageSubprovider } = require("@0x/sol-coverage");
+const { RevertTraceSubprovider } = require("@0x/sol-trace");
+
+// const mode = process.env.MODE;
+
+const projectRoot = "";
+const solcVersion = "0.5.1";
+const defaultFromAddress = "0x9d42A32ba574D25d2bd6cc002a5d54a424Cdb55d";
+const isVerbose = true;
+const artifactAdapter = new TruffleArtifactAdapter(projectRoot, solcVersion);
+const revertTraceSubprovider = new RevertTraceSubprovider(artifactAdapter, defaultFromAddress)
+const provider = new ProviderEngine();
+provider.addProvider(revertTraceSubprovider)
+provider.addProvider(new RpcSubprovider({rpcUrl: 'http://localhost:7545'}))
+provider.start()
+
+provider.start(err => {
+  if (err !== undefined) {
+    console.log(err);
+    process.exit(1);
+  }
+});
+provider.send = provider.sendAsync.bind(provider);
+
 module.exports = {
   /**
    * Networks define how you connect to your ethereum client and let you set the
@@ -43,8 +89,9 @@ module.exports = {
     // options below to some value.
     //
       development: {
-      host: "127.0.0.1",     // Localhost (default: none)
-      port: 7545,            // Standard Ethereum port (default: none)
+      provider,
+      // host: "127.0.0.1",     // Localhost (default: none)
+      // port: 7545,            // Standard Ethereum port (default: none)
       network_id: 5777,       // Any network (default: none)
     },
 
