@@ -42,8 +42,8 @@
 
 
 const ProviderEngine = require("web3-provider-engine");
-// const WebsocketSubprovider = require("web3-provider-engine/subproviders/websocket.js")
-const RpcSubprovider = require("web3-provider-engine/subproviders/rpc.js")
+const WebsocketSubprovider = require("web3-provider-engine/subproviders/websocket.js")
+// const RpcSubprovider = require("web3-provider-engine/subproviders/rpc.js")
 const { TruffleArtifactAdapter } = require("@0x/sol-trace");
 // const { ProfilerSubprovider } = require("@0x/sol-profiler");
 // const { CoverageSubprovider } = require("@0x/sol-coverage");
@@ -59,8 +59,8 @@ const artifactAdapter = new TruffleArtifactAdapter(projectRoot, solcVersion);
 const revertTraceSubprovider = new RevertTraceSubprovider(artifactAdapter, defaultFromAddress)
 const provider = new ProviderEngine();
 provider.addProvider(revertTraceSubprovider)
-provider.addProvider(new RpcSubprovider({rpcUrl: 'http://localhost:7545'}))
-provider.start()
+provider.addProvider(new WebsocketSubprovider({rpcUrl: 'http://localhost:7545'}))
+// provider.start()
 
 provider.start(err => {
   if (err !== undefined) {
@@ -68,6 +68,7 @@ provider.start(err => {
     process.exit(1);
   }
 });
+
 provider.send = provider.sendAsync.bind(provider);
 
 module.exports = {
