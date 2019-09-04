@@ -7,6 +7,7 @@ contract VestingSchedule {
   // uint8 vestingRate; // 0 -> 100
   uint16 public vestingPeriod; // in years
   uint16 public year; // just for the demo, long term this needs to be generalized to a DateTime
+  bool public disabled;
 
   constructor (address _grantee, address _capTable, string memory _name, uint256 _shares, uint16 _year, uint16 _vestingPeriod) public {
     grantee = _grantee;
@@ -16,9 +17,24 @@ contract VestingSchedule {
     // vestingRate = _vestingRate;
     vestingPeriod = _vestingPeriod;
     year = _year; // normally 1, as in starts the year this contract is initiated
+    disabled = false;
   }
 
-  function vestedPercent() external view returns (uint16) {
+  modifier isOwner {
+    require(msg.sender == capTable, "Only the CapTable owning this VestingSchedule may modify it");
+    _;
+  }
+
+  modifier isEnabled {
+    require(!disabled, "Contract is disabled");
+    _;
+  }
+
+  function disable(bool state) external isOwner {
+    disabled = state;
+  }
+
+  function vestedPercent() external view isEnabled returns (uint16) {
     if (year >= vestingPeriod) {
       return 100;
     }
@@ -27,21 +43,11 @@ contract VestingSchedule {
     }
   } // 0 -> 100
 
-  function testDivLiteral() external pure returns (uint16) {
-    return 1 / 5 * 100;
-  }
-  // Expected: 20 | Result: 20
-
-  function testDivCast() external pure returns (uint16) {
-    return uint16(1) * uint16(100) / uint16(5);
-  }
-  // Expected: 20 | Result: 20
-
-  function vested() external view returns (uint256) {
+  function vested() external view isEnabled returns (uint256) {
     return shares * this.vestedPercent() / 100;
   }
 
-  function increaseYear(uint16 amount) external returns(uint16) {
+  function increaseYear(uint16 amount) external isEnabled returns(uint16) {
     if (year + amount <= vestingPeriod) {
       year = year + amount;
     }

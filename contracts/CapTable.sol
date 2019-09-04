@@ -10,13 +10,19 @@ contract CapTable{
     vestingSchedules[grantee] = vs;
   }
 
-  // function modifySchedule(address grantee, address newSchedule) public {
-  //   VestingSchedule vs = vestingSchedules[address(grantee)];
-  //   vs.grantee = address(newGrantee); // Expression has to be an lvalue
+  function replaceSchedule(address grantee, address newSchedule) public {
+    deleteSchedule(grantee);
 
-  //   delete vestingSchedules[address(grantee)];
-  //   vestingSchedules[address(newGrantee)] = vs;
-  // }
+    VestingSchedule vs = VestingSchedule(address(newSchedule));
+    address newGrantee = address(vs.grantee());
+    vestingSchedules[newGrantee] = vs;
+  }
+
+  function deleteSchedule(address grantee) public {
+    VestingSchedule oldSchedule = vestingSchedules[address(grantee)];
+    oldSchedule.disable(true);
+    delete vestingSchedules[address(grantee)];
+  }
   // Grantee[] grantees;
 
   // function getVestedPercent(Grantee grantee) public returns (uint8) {
