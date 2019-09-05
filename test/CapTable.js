@@ -5,43 +5,50 @@ const truffleAssert = require('truffle-assertions');
 contract("CapTable", () => {
     let ct;
     let accounts;
-    context('basic tests', async function() {
-        beforeEach(async function(){
+
+    describe('basic tests', async function() {
+        before(async function(){
             ct = await CapTable.new();
             accounts = await web3.eth.getAccounts();
         })
+
         it("should deploy", async () => {
-            await assert.notEqual(ct, null)
+            await assert.isNotNull(ct, null)
         })
+
         it("should add a VestingSchedule", async () => {
-            let vestingSchedule = await VestingSchedule.new(accounts[0], accounts[0], "test_deploy", 1000, 1, 5)
+            const vestingSchedule = await VestingSchedule.new(accounts[0], ct.address, "test_deploy", 1000, 1, 5)
             await ct.addSchedule(vestingSchedule.address, {from: accounts[0]})
 
-            let storedScheduleAddress = await ct.vestingSchedules.call(accounts[0])
+            const storedScheduleAddress = await ct.vestingSchedules.call(accounts[0])
 
-            let storedSchedule = await VestingSchedule.at(storedScheduleAddress)
+            const storedSchedule = await VestingSchedule.at(storedScheduleAddress)
 
-            await storedSchedule.grantee().then(result => assert.equal(result, accounts[0]))
+            const res = await storedSchedule.grantee()
+            assert.strictEqual(res, accounts[0])
         })
+
         it("should delete a VestingSchedule", async () => {
-            let vestingSchedule = await VestingSchedule.new(accounts[0], accounts[0], "test_deploy", 1000, 1, 5)
+            const vestingSchedule = await VestingSchedule.new(accounts[0], ct.address, "test_deploy", 1000, 1, 5)
             await ct.addSchedule(vestingSchedule.address, {from: accounts[0]})
 
             await ct.deleteSchedule(accounts[0], {from: accounts[0]})
-            let deletedSchedule = await ct.vestingSchedules.call(accounts[0])
+            const deletedSchedule = await ct.vestingSchedules.call(accounts[0])
 
-            await assert.equal(deletedSchedule, 0x0)
+            assert.strictEqual(deletedSchedule, `0x${"00".repeat(20)}`)
         })
+
         it("should replace a VestingSchedule with a new one", async () => {
-            let vestingSchedule = await VestingSchedule.new(accounts[0], accounts[0], "test_deploy", 1000, 1, 5)
-            await ct.addSchedule(vestingSchedule.address, {from: accounts[0]})
-            
-            let newSchedule = await VestingSchedule.new(accounts[1], accounts[0], "test_deploy", 1000, 1, 5)
-            await ct.replaceSchedule(accounts[0], newSchedule.address, {from: accounts[0]})
+          const vestingSchedule = await VestingSchedule.new(accounts[0], ct.address, "test_deploy", 1000, 1, 5)
+          await ct.addSchedule(vestingSchedule.address, {from: accounts[0]})
 
-            let retrievedSchedule = await VestingSchedule.at(await ct.vestingSchedules.call(accounts[1]))
+          const newSchedule = await VestingSchedule.new(accounts[1], accounts[0], "test_deploy", 1000, 1, 5)
+          await ct.replaceSchedule(accounts[0], newSchedule.address, {from: accounts[0]})
 
-            await retrievedSchedule.grantee.call().then(result => assert.equal(result, accounts[1]))
+          const retrievedSchedule = await VestingSchedule.at(await ct.vestingSchedules.call(accounts[1]))
+
+          const res = await retrievedSchedule.grantee.call()
+          assert.strictEqual(res, accounts[1])
         })
     });
 })
