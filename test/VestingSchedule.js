@@ -53,8 +53,8 @@ contract("VestingSchedule", () => {
             truffleAssert.passes(await vs.disable(true, {from: accounts[0]}))
         })
         it("should not be able to be disabled by a non-owner", async () => {
-            let reason = "Returned error: VM Exception while processing transaction: revert Only the owner of this VestingSchedule may modify it -- Reason given: Only the owner of this VestingSchedule may modify it."
-            await truffleAssert.reverts(vs.disable(true, {from: accounts[1]}), reason)
+            // let reason = "Returned error: VM Exception while processing transaction: revert Only the owner of this VestingSchedule may modify it -- Reason given: Only the owner of this VestingSchedule may modify it."
+            await truffleAssert.reverts(vs.disable(true, {from: accounts[1]}))
         })
     })
 })

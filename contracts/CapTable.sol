@@ -1,13 +1,17 @@
 pragma solidity ^0.5.1;
 import "./VestingSchedule.sol";
 
-contract CapTable{
+contract CapTable {
   mapping (address=>VestingSchedule) public vestingSchedules;
+  bool persisted;
 
-  function addSchedule(address schedule) external {
-    VestingSchedule vs = VestingSchedule(address(schedule));
+  // constructor () public {}
+
+  function addSchedule(address schedule) public {
+    VestingSchedule vs = VestingSchedule(schedule);
     address grantee = address(vs.grantee());
     vestingSchedules[grantee] = vs;
+    persisted = true;
   }
 
   function replaceSchedule(address grantee, address newSchedule) public {
@@ -19,9 +23,9 @@ contract CapTable{
   }
 
   function deleteSchedule(address grantee) public {
-    VestingSchedule oldSchedule = vestingSchedules[address(grantee)];
+    VestingSchedule oldSchedule = vestingSchedules[grantee];
     oldSchedule.disable(true);
-    delete vestingSchedules[address(grantee)];
+    delete vestingSchedules[grantee];
   }
   // Grantee[] grantees;
 
