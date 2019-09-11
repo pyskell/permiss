@@ -34,7 +34,7 @@ contract VestingSchedule {
     disabled = state;
   }
 
-  function vestedPercent() external view isEnabled returns (uint16) {
+  function schedule() external view isEnabled returns (uint16) {
     if (year >= vestingPeriod) {
       return 100;
     }
@@ -44,7 +44,7 @@ contract VestingSchedule {
   } // 0 -> 100
 
   function vested() external view isEnabled returns (uint256) {
-    return shares * this.vestedPercent() / 100;
+    return shares * this.schedule() / 100;
   }
 
   function increaseYear(uint16 amount) external isEnabled returns(uint16) {
