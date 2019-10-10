@@ -5,6 +5,7 @@ contract CapTable{
   mapping (address=>VestingSchedule) public vestingSchedules;
   uint256 outstandingShares = 0;
   uint256 maxShares;
+  uint256 shareParValue; // *10^-4 (ie. 0.0001)
 
   constructor (uint256 _maxShares) public {
     maxShares = _maxShares;
