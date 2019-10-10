@@ -8,7 +8,7 @@ contract("VestingSchedule", () => {
     let accounts;
     context('basic tests', async function() {
         beforeEach(async function(){
-            ct = await CapTable.new();
+            ct = await CapTable.new(10000);
             accounts = await web3.eth.getAccounts();
         })
         it("should deploy", async () => {
@@ -36,13 +36,13 @@ contract("VestingSchedule", () => {
 
     context("adjusting vesting schedule", async () => {
         beforeEach(async () => {
-            ct = await CapTable.new();
+            ct = await CapTable.new(10000);
             accounts = await web3.eth.getAccounts();
             vs = await VestingSchedule.new(accounts[0], accounts[0], "test_deploy", 1000, 1, 5)
         })
         it("should increase vesting year", async () => {
             await vs.increaseYear(1, {from: accounts[0]})
-            await assert(vs.year(), 2)
+            await assert.equal(await vs.year(), 2)
         })
         it("should be 40% vested (400)", async () => {
             await vs.increaseYear(1, {from: accounts[0]})
@@ -53,8 +53,8 @@ contract("VestingSchedule", () => {
             truffleAssert.passes(await vs.disable(true, {from: accounts[0]}))
         })
         it("should not be able to be disabled by a non-owner", async () => {
-            // let reason = "Returned error: VM Exception while processing transaction: revert Only the owner of this VestingSchedule may modify it -- Reason given: Only the owner of this VestingSchedule may modify it."
-            await truffleAssert.reverts(vs.disable(true, {from: accounts[1]}))
+            let reason = "Only the CapTable owning this VestingSchedule may modify it"
+            await truffleAssert.reverts(vs.disable(true, {from: accounts[1]}), reason)
         })
     })
 })

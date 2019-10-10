@@ -48,7 +48,7 @@ contract VestingSchedule {
   }
 
   function increaseYear(uint16 amount) external isEnabled returns(uint16) {
-    if (year + amount <= vestingPeriod) {
+    if (year + amount < vestingPeriod) {
       year = year + amount;
     }
 
