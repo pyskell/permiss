@@ -8,7 +8,7 @@ contract("CapTable", () => {
 
     describe('basic tests', async function() {
         before(async function(){
-            ct = await CapTable.new();
+            ct = await CapTable.new(10000);
             accounts = await web3.eth.getAccounts();
         })
 
@@ -49,6 +49,16 @@ contract("CapTable", () => {
 
           const res = await retrievedSchedule.grantee.call()
           assert.strictEqual(res, accounts[1])
+        })
+
+        it("shouldn't allow outStandingShares to exceed maxShares", async () => {
+            const vestingSchedule = await VestingSchedule.new(accounts[0], ct.address, "test_deploy", 100000, 1, 5)
+            // await ct.addSchedule(vestingSchedule.address, {from: accounts[0]})
+
+            await truffleAssert.reverts(
+                ct.addSchedule(vestingSchedule.address, {from: accounts[0]}),
+                "Total shares exceeds max allowable shares"
+            )
         })
     });
 })

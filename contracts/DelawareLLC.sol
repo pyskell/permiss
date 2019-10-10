@@ -1,5 +1,14 @@
 pragma solidity ^0.5.1;
+
+import "./CapTable.sol";
+
 contract DelawareLLC {
+  CapTable capTable;
+
+  constructor (address _capTable) public {
+    capTable = CapTable(_capTable);
+  }
+
   struct Address {
     string name;
     string street;

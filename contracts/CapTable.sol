@@ -3,9 +3,19 @@ import "./VestingSchedule.sol";
 
 contract CapTable{
   mapping (address=>VestingSchedule) public vestingSchedules;
+  uint256 outstandingShares = 0;
+  uint256 maxShares;
+
+  constructor (uint256 _maxShares) public {
+    maxShares = _maxShares;
+  }
 
   function addSchedule(address schedule) external {
     VestingSchedule vs = VestingSchedule(address(schedule));
+
+    outstandingShares += vs.shares();
+    require(outstandingShares < maxShares, "Total shares exceeds max allowable shares");
+
     address grantee = address(vs.grantee());
     vestingSchedules[grantee] = vs;
   }
