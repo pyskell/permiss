@@ -3,7 +3,7 @@ pragma experimental ABIEncoderV2;
 
 import "./CapTable.sol";
 
-contract DelawareLLC {
+contract LLC {
   CapTable capTable;
   Address registeredOffice;
   Address registeredAgent;
