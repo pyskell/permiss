@@ -12,27 +12,27 @@ contract CapTable{
   }
 
   function addSchedule(address schedule) external {
-    VestingSchedule vs = VestingSchedule(address(schedule));
+    VestingSchedule vs = VestingSchedule(schedule);
 
     outstandingShares += vs.shares();
     require(outstandingShares < maxShares, "Total shares exceeds max allowable shares");
 
-    address grantee = address(vs.grantee());
+    address grantee = vs.grantee();
     vestingSchedules[grantee] = vs;
   }
 
   function replaceSchedule(address grantee, address newSchedule) public {
     deleteSchedule(grantee);
 
-    VestingSchedule vs = VestingSchedule(address(newSchedule));
-    address newGrantee = address(vs.grantee());
+    VestingSchedule vs = VestingSchedule(newSchedule);
+    address newGrantee = vs.grantee();
     vestingSchedules[newGrantee] = vs;
   }
 
   function deleteSchedule(address grantee) public {
-    VestingSchedule oldSchedule = vestingSchedules[address(grantee)];
+    VestingSchedule oldSchedule = vestingSchedules[grantee];
     oldSchedule.disable(true);
-    delete vestingSchedules[address(grantee)];
+    delete vestingSchedules[grantee];
   }
   // Grantee[] grantees;
 
