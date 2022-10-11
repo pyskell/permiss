@@ -34,7 +34,7 @@
     "nyc": "^14.1.1",
     "truffle": "^5.0.24",
     "truffle-assertions": "^0.9.1",
-    "truffle-core": "^5.0.24",
+    "truffle-core": "^5.0.34",
     "truffle-legacy-system": "^1.0.7"
   },
   "postinstall": "find ./node_modules/**/node_modules -type d -name 'bitcore-lib' -exec rm -r {} + && echo 'Deleted duplicate bitcore-libs'"
